@@ -1,6 +1,10 @@
 MySteam Powered
 ========
 
+<p align="center">
+  <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/tanweth/mysteam_logo.jpg" />
+</p>
+
 * Version: 1.0
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
