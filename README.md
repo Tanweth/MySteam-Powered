@@ -72,7 +72,7 @@ You can also ask for support (bug-related or not) in the release thread:
 
 * 1.0 - Initial release.
 
-Special Thanks
+## Special Thanks
 
 * Wildcard - for making Advanced Sidebox (an awesome plugin), and for routinely assisting me with issues.
 
