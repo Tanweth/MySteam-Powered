@@ -1,0 +1,119 @@
+/* Plugin Name: MySteam Powered
+ * Author: Tanweth
+ * http://www.kerfufflealliance.com
+ *
+ * CSS stylesheet for use with the above plugin.
+ */
+ 
+/* Styles to do with the formatting of the Steam status list */ 
+.mysteam_list_wrapper {
+	display: inline-block;
+}
+
+.mysteam_list_avatar {
+	width: 32px;
+	float: left;
+}
+
+.mysteam_list_status {
+	margin-left: 44px;
+	position: relative;
+	min-height: 48px;
+}
+
+.mysteam_status_wrapper {
+	position: absolute;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 100%;
+	text-overflow: ellipsis;
+}
+
+
+/* Style for the border around avatars */  
+.steam_avatar {
+	display: inline-block;
+	padding: 3px;
+	border-radius: 6px;	
+}
+
+/* Visual styles for the avatar border, depending upon the user's current status
+ * 
+ * Border color is a CSS gradient. 
+ * The first background entry is an SVG legacy gradient for IE9 compatibility.
+ * Second entry is a legacy webkit gradient format for compatibility with the Android Gingerbread and below stock browser. 
+ * Third is the the current preferred format, supported in most semi-modern browsers.
+ */
+.steam_avatar_offline {
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzczNzA2ZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM1MDRkNGIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#73706f), color-stop(100%,#504d4b));
+	background: linear-gradient(to bottom, #73706f 0%,#504d4b 100%);
+	box-shadow: 0px 0px 3px #73706f;
+}
+
+.steam_avatar_online {
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzIzYjdmYyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxNDcyYmMiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#23b7fc), color-stop(100%,#1472bc));
+	background: linear-gradient(to bottom,  #23b7fc 0%,#1472bc 100%);
+	box-shadow: 0px 0px 3px #41a8f9;
+}
+
+.steam_avatar_in-game {
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzViYzgxMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0NTk3MGUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5bc811), color-stop(100%,#45970e));
+	background: linear-gradient(to bottom,  #5bc811 0%,#45970e 100%);
+	box-shadow: 0px 0px 3px #53e00d;
+}
+
+/* Visual styles for the status text, depending upon the user's current status. */ 
+.steam_in-game {
+	color: #4aa110;
+}
+
+.steam_in-game a:link, .steam_in-game a:visited {
+	color: #4aa110;
+	text-decoration: none;
+}
+
+.steam_online {
+	color: #2e94e3;
+}
+
+.steam_online a:link, .steam_online a:visited {
+	color: #2e94e3;
+	text-decoration: none;
+}
+
+.steam_offline {
+	color: gray;
+}
+
+.steam_offline a:link, .steam_offline a:link {
+	color: gray;
+	text-decoration: none;
+}
+
+/* Styles to do with the display of the Steam status image on postbit (if enabled), including the hover effect. */ 
+.steam_icon {
+	display: inline-block;
+	padding: 2px;
+	border-radius: 4px;
+}
+
+.steam_icon_status, .steam_icon_status_classic {
+	display: none;
+	font-weight: bold;
+}
+
+.steam_icon:hover + .steam_icon_status {
+	display: inline-block;
+}
+
+.steam_icon:hover + .steam_icon_status_classic {
+	display: block;
+}
+
+/* Steam icon for the User CP nav menu link */ 
+.mysteam_usercp_nav {
+	background: url(../../../images/mysteam/steam_icon.png) no-repeat left center;
+}
