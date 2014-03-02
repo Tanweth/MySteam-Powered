@@ -14,7 +14,7 @@ MySteam Powered
 
 Owners of gaming-related forums take heed! Here be a plugin for the MyBB forum software that seamlessly integrates features from Valve's industrious gaming client with your forums. Also integrates with Advanced Sidebox (https://github.com/WildcardSearch/Advanced-Sidebox) if installed.
 
-Features
+## Features
 
 * Uses the Steam Web API to display current Steam status (online, offline, what games they're playing, etc.) and contact information for all users who have integrated their Steam accounts.
 
@@ -34,13 +34,13 @@ Features
 
 * Highly customizable. Nearly every feature can be modified to your liking.
 
-How to Install
+## How to Install
 
 * Simply upload the files to your forum's directory, then go to your Admin CP > Configuration > Plugins. Find "MySteam Powered" on the list, and click "Install & Activate." Warnings about current plugin issues that need addressing will be displayed on this page.
 
 * To use with Advanced Sidebox (ASB), you MUST have ASB v2.0.5 or later. If ASB is installed, the ASB module will be automatically installed into your ASB directory when you install the plugin. 
 
-Setting It Up
+## Setting It Up
 
 * Steam Web API Key: Before anything will work, you must acquire (if you haven't already) a Steam Web API Key. A link for obtaining one is listed in Settings.
 
@@ -50,7 +50,7 @@ Setting It Up
 
 * Built-In Status List vs. Advanced Sidebox Module: The built-in status list is automatically set to appear at the top of your Index and Portal pages (it can be moved, see below under Customization). It can only appear on those pages. The ASB module can be set to appear on any (or every) page, and can be set to automatically refresh without needing a page reload.
 
-Customization
+## Customization
 
 * You can configure most of the plugin from the Admin CP > Configuration > Settings > MySteam Powered and MySteam Powered Status List (Non-Advanced Sidebox) categories. If you have Advanced Sidebox, you can configure the ASB module from Admin CP > Configuration > Advanced Sidebox and accessing the sidebox's popup configuration menu.
 
@@ -58,17 +58,17 @@ Customization
 
 * You can modify the CSS used by MySteam Powered from the normal stylesheets list under each theme. The file is named mysteam.css.
 
-Known Issues
+## Known Issues
 
 * The code for handling when the Steam network is down is largely theoretical. Steam's network is rarely down, and if it is down it is rarely down for very long, so I haven't been able to test it in a "live" downtime scenario. It should work, but it could go a bit wild. :P
 
-Support
+## Support
 
 If you notice a bug, you should report it in the Issues sections of the GitHub page: https://github.com/Tanweth/MySteam-Powered
 
 You can also ask for support (bug-related or not) in the release thread: 
 
-Changelog
+## Changelog
 
 * 1.0 - Initial release.
 
