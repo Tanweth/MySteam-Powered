@@ -36,7 +36,7 @@ $l['mysteam_list_settings'] = "List Settings";
 $l['mysteam_apikey_title'] = "Steam Web API Key";
 $l['mysteam_apikey_desc'] = "Enter the Steam Web API key for your website (obtainable <a href=\"http://steamcommunity.com/dev/apikey\">here</a>).";
 $l['mysteam_limitbygroup_title'] = "Limit Usergroups Displayed?";
-$l['mysteam_limitbygroup_desc'] = "Enter the gid of each group you want displayed, separated by commas. The gid can be found in the manage URL for the group in the Admin CP (e.g. /index.php?module=user-groups&action=edit&gid=<strong>123</strong>). Changes take effect on the next cache refresh..";
+$l['mysteam_limitbygroup_desc'] = "Enter the gid of each group you want displayed, separated by commas. The gid can be found in the manage URL for the group in the Admin CP (e.g. /index.php?module=user-groups&action=edit&gid=<strong>123</strong>). Changes take effect on the next cache refresh.";
 $l['mysteam_cache_title'] = "Cache Lifespan";
 $l['mysteam_cache_desc'] = "Specify how long (in minutes) the cache should be used before refreshing it. Reducing this increases the recency of the Steam info at the cost of increased server load. 0 disables the cache.";
 $l['mysteam_displayname_title'] = "Displayed Name";

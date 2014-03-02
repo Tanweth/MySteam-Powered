@@ -67,7 +67,7 @@ function mysteam_info()
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
 		'version'		=> '1.0',
-		'guid' 			=> '',
+		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
 		'compatibility' => '16*'
 	);
 }
