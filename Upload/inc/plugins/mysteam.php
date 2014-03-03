@@ -14,6 +14,8 @@ if(!defined('IN_MYBB'))
 
 /*
  * mysteam_info()
+ *
+ * Displays info on the current plugin. Also generates messages about plugin's status on Plugins page.
  * 
  * @return - (array) info on the current plugin.
  */
@@ -63,7 +65,7 @@ function mysteam_info()
 	return array(
 		'name'			=> $lang->mysteam_title,
 		'description'	=> $mysteam_desc,
-		'website'		=> 'http://kerfufflealliance.com',
+		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
 		'version'		=> '1.0',
@@ -75,7 +77,7 @@ function mysteam_info()
 /*
  * mysteam_install()
  * 
- * Installs plugin, creating Steam ID database entry, and generating settings. Also calls mysteam_activate() function.
+ * Installs plugin, creating Steam ID database entry, generating settings, installing ASB module (if applicable), and adding stylesheet. Also calls mysteam_activate() function.
  */
  function mysteam_install()
  {
@@ -359,6 +361,11 @@ no='.$lang->mysteam_postbit_no
 	return false;
  }
 
+/*
+ * mysteam_uninstall()
+ * 
+ * Uninstalls plugin by removing new settings, database field, and stylesheet. Also calls mysteam_deactivate() if applicable.
+ */
  function mysteam_uninstall()
  {
 	global $db, $theme;
@@ -986,7 +993,6 @@ if (!function_exists('mysteam_build_cache'))
  * mysteam_build_list()
  * 
  * Calls mysteam_check_cache(), then uses cache output to generate Steam status entry for each user.
- * 
  */
 function mysteam_build_list()
 {	
