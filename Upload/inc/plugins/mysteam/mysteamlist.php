@@ -16,7 +16,7 @@ if(!defined('IN_MYBB') || !defined('IN_ASB'))
 /*
  * asb_mysteamlist_info()
  *
- * Provides info to ASB about the addon.
+ * Provides info to ASB about the addon (including settings).
  *
  * @return: (array) the module info.
  */
@@ -124,9 +124,10 @@ EOF
 /*
  * asb_mysteamlist_build_template()
  *
- * Handles display of children of this addon at page load
+ * Handles display of children of this addon at page load.
  *
  * @param - $args - (array) the specific information from the child box
+ *
  * @return: (bool) true on success, false on fail/no content
  */
 function asb_mysteamlist_build_template($args)
@@ -152,7 +153,7 @@ function asb_mysteamlist_build_template($args)
 	}
 
 	// If there are Steam users to display . . .
-	if($asb_mysteamlist)
+	if ($asb_mysteamlist)
 	{
 		// set out template variable to the returned statuses list and return true
 		$$template_var = $asb_mysteamlist;
@@ -170,9 +171,10 @@ EOF;
 /*
  * asb_mysteamlist_xmlhttp()
  *
- * Handles display of children of this addon via AJAX
+ * Handles display of children of this addon via AJAX.
  *
- * @param - $args - (array) the specific information from the child box
+ * @param - $args - (array) the specific information from the child box.
+ *
  * @return: n/a
  */	
 function asb_mysteamlist_xmlhttp($args)

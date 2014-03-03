@@ -1282,7 +1282,7 @@ function mysteam_profile()
 		
 		if ($steam)
 		{
-			$memprofile = $post + $steam['users'][$memprofile['uid']];
+			$memprofile = $memprofile + $steam['users'][$memprofile['uid']];
 			mysteam_status($memprofile);
 			eval("\$steamname = \"".$templates->get("mysteam_contact")."\";");
 		}
