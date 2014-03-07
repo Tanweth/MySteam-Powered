@@ -2,7 +2,7 @@ MySteam Powered
 ========
 
 <p align="center">
-  <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/tanweth/mysteam_logo.jpg" />
+  <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
 * Version: 1.0
