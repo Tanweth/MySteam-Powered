@@ -44,7 +44,7 @@ foreach ($steam['users'] as $steam_presort)
 	}
 }
 	
-$steam_sort = array_merge($steam_presort_game, $steam_presort_online, $steam_presort_offline);
+$steam_sort = array_merge((array)$steam_presort_game, (array)$steam_presort_online, (array)$steam_presort_offline);
 
 // Now it is time to generate each user's Steam status.
 foreach ($steam_sort as $user)

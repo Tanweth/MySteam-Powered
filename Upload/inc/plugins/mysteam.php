@@ -68,7 +68,7 @@ function mysteam_info()
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
-		'version'		=> '1.0',
+		'version'		=> '1.0.1',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
 		'compatibility' => '16*'
 	);
@@ -96,9 +96,6 @@ function mysteam_info()
 	{
 		$list_enable_value = 'yes';
 	}
-	
-	// Move complete list file to MyBB root directory
-	@rename(MYBB_ROOT.'inc/plugins/mysteam/steam-list-complete.php', MYBB_ROOT.'steam-list-complete.php');
 
 	// Add non-Advanced Sidebox status list settings group, then settings.
 	$group = array(
@@ -376,9 +373,6 @@ no='.$lang->mysteam_postbit_no
 		flash_message('The Steam Status module for Advanced Sidebox is still installed. Please delete it from within the Advanced Sidebox menu before uninstalling this plugin.', 'error');
 		admin_redirect('index.php?module=config-plugins');
 	}
-	
-	// Move complete list file back to plugin directory
-	@rename(MYBB_ROOT.'steam-list-complete.php', MYBB_ROOT.'inc/plugins/mysteam/steam-list-complete.php');
 
 	// Delete Steam ID database field
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP steamid");
@@ -403,13 +397,49 @@ no='.$lang->mysteam_postbit_no
  }
  
 /*
+ * mysteam_upgrade()
+ * 
+ * Includes special routines for upgrading from the previous version.
+ */
+function mysteam_upgrade()
+{
+	global $cache;
+	
+	$mysteam = $cache->read('mysteam');
+	
+	// If no version specified (was the case with v1.0) and ASB is installed, upgrade the ASB module.
+	if (!$mysteam['version'] && file_exists(MYBB_ROOT.'inc/plugins/asb.php'))
+	{
+		@copy(MYBB_ROOT.'inc/plugins/mysteam/mysteamlist.php', MYBB_ROOT.'inc/plugins/asb/modules/mysteamlist.php');
+	}
+}
+ 
+/*
  * mysteam_activate()
  * 
  * Creates templates and generates edits to default templates
  */
 function mysteam_activate()
 {
-	global $mybb, $db;
+	global $cache, $mybb, $db;
+	
+	// Run upgrade script (if needed)
+	mysteam_upgrade();
+	
+	// Cache version number if not cached already
+	$mysteam_cache = $cache->read('mysteam');
+	$cached_version = $mysteam_cache['version'];
+	$mysteam_info = mysteam_info();
+	$version_number = $mysteam_info['version'];
+	
+	if ($cached_version != $version_number)
+	{	
+		$mysteam_update['version'] = $version_number;
+		$cache->update('mysteam', $mysteam_update);
+	}
+	
+	// Move complete list file to MyBB root directory
+	@rename(MYBB_ROOT.'inc/plugins/mysteam/steam-list-complete.php', MYBB_ROOT.'steam-list-complete.php');
 
 	// Add new templates
 	$template = array(
@@ -693,6 +723,9 @@ function mysteam_deactivate()
 {
 	global $db;
 	
+	// Move complete list file back to plugin directory
+	@rename(MYBB_ROOT.'steam-list-complete.php', MYBB_ROOT.'inc/plugins/mysteam/steam-list-complete.php');
+	
 	// Delete templates
 	$db->delete_query("templates", "title LIKE 'mysteam_%' AND sid= '-2'");
 
@@ -788,58 +821,56 @@ if ($mybb->settings['mysteam_apikey'])
  * 
  * return: (mixed) an (array) of the cached Steam user info, or (bool) false on fail.
  */
-// Only load if function not already called (may be if using ASB sidebox on same page).
-if (!function_exists('mysteam_check_cache'))
-{
-	function mysteam_check_cache()
-	{	
-		global $mybb, $cache;
+function mysteam_check_cache()
+{	
+	global $mybb, $cache;
+	
+	// Don't touch the cache if disabled, just return the results from Steam's network.
+	if (!$mybb->settings['mysteam_cache'])
+	{
+		$steam = mysteam_build_cache();
 		
-		// Don't touch the cache if disabled, just return the results from Steam's network.
-		if (!$mybb->settings['mysteam_cache'])
+		if ($steam['users'])
 		{
-			$steam = mysteam_build_cache();
-			
-			if ($steam['users'])
-			{
-				return $steam;
-			}
-			return false;
+			return $steam;
 		}
-		
-		$steam = $cache->read('mysteam');
-		
-		// Convert the cache lifespan setting into seconds.
-		$cache_lifespan = 60 * (int) $mybb->settings['mysteam_cache'];
-		
-		// Attempt to update the cache if it is too old.
-		if (!$steam['time'] || TIME_NOW - $steam['time'] > $cache_lifespan)
-		{	
-			// Cache time of last attempt to contact Steam, then on future loads check if it has been 3 minutes since then. If not, return false.
-			if (!$steam['lastattempt'] || TIME_NOW - $steam['lastattempt'] > 180)
-			{
-				$steam_update['lastattempt'] = TIME_NOW;
-				$cache->update('mysteam', $steam_update);
-			}
-			else
-			{
-				return false;
-			}
-			
-			$steam_update = mysteam_build_cache();
-			
-			// If response generated, update the cache.
-			if ($steam_update['users'])
-			{
-				$cache->update('mysteam', $steam_update);
-				$steam = $cache->read('mysteam');
-			}
-			else
-			{
-				return false;
-			}
-		}
+		return false;
+	}
+	
+	$steam = $cache->read('mysteam');
+	
+	// Convert the cache lifespan setting into seconds.
+	$cache_lifespan = 60 * (int) $mybb->settings['mysteam_cache'];
+	
+	// If the cache is still current enough, just return the cached info.
+	if (TIME_NOW - (int) $steam['time'] < $cache_lifespan)
+	{	
 		return $steam;
+	}	
+	
+	// If last attempt to contact Steam failed, check if it has been over 3 minutes since then. If not, return false (i.e. do not attempt another contact).
+	if (TIME_NOW - (int) $steam['lastattempt'] < 180)
+	{
+		return false;
+	}
+		
+	$steam_update = mysteam_build_cache();
+	
+	// If response generated, update the cache.
+	if ($steam_update['users'])
+	{
+		$steam_update['version'] = $steam['version'];
+		$cache->update('mysteam', $steam_update);
+		$steam = $cache->read('mysteam');
+		return $steam;
+	}
+	// If not, cache time of last attempt to contact Steam, so it can be checked later.
+	else
+	{
+		$steam_update['lastattempt'] = TIME_NOW;
+		$steam_update['version'] = $steam['version'];
+		$cache->update('mysteam', $steam_update);
+		return false;
 	}
 }
 
@@ -900,93 +931,92 @@ function mysteam_filter_groups($user)
  * 
  * return: (mixed) an (array) of the Steam user info to be cached, or (bool) false on fail.
  */
-// Only load if function not already called (may be if using ASB sidebox on same page).
-if (!function_exists('mysteam_build_cache'))
+function mysteam_build_cache()
 {
-	function mysteam_build_cache()
+	global $mybb, $db, $cache;
+	
+	// Prune users who haven't visited since the cutoff time if set.
+	if ($mybb->settings['mysteam_prune'])
 	{
-		global $mybb, $db, $cache;
-		
-		// Prune users who haven't visited since the cutoff time if set.
-		if ($mybb->settings['mysteam_prune'])
-		{
-			$cutoff = TIME_NOW - (86400 * (int) $mybb->settings['mysteam_prune']);
-			$cutoff_query = 'AND lastvisit > ' .$cutoff;
-		}
-		
-		// Retrieve all members who have Steam IDs from the database.
-		$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, steamid", "steamid IS NOT NULL AND steamid<>''" .$cutoff_query, array("order_by" => 'username'));
+		$cutoff = TIME_NOW - (86400 * (int) $mybb->settings['mysteam_prune']);
+		$cutoff_query = 'AND lastvisit > ' .$cutoff;
+	}
+	
+	// Retrieve all members who have Steam IDs from the database.
+	$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, steamid", "steamid IS NOT NULL AND steamid<>''" .$cutoff_query, array("order_by" => 'username'));
 
-		// Check if there are usergroups to limit the results to.
-		if ($mybb->settings['mysteam_limitbygroup'])
-		{
-			// Loop through results, casting aside those not in the allowed usergroups like the dry remnant of a garden flower.
-			while ($user = $db->fetch_array($query))
-			{	
-				$is_allowed = mysteam_filter_groups($user);
-				
-				if ($is_allowed)
-				{
-					$users[] = $user;
-				}
-			}
-		}
-		else
+	// Check if there are usergroups to limit the results to.
+	if ($mybb->settings['mysteam_limitbygroup'])
+	{
+		// Loop through results, casting aside those not in the allowed usergroups like the dry remnant of a garden flower.
+		while ($user = $db->fetch_array($query))
 		{	
-			while ($user = $db->fetch_array($query))
+			$is_allowed = mysteam_filter_groups($user);
+			
+			if ($is_allowed)
 			{
 				$users[] = $user;
 			}
 		}
-
-		// Only run if users to display
-		if (!$users)
-		{
-			return false;
-		}
-		
-		// Generate list of URLs for contacting Steam's servers.
-		foreach ($users as $user)
-		{
-			$data[] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
-		}
-
-		// Fetch data from Steam's servers.
-		$responses = multiRequest($data);	
-		
-		// Check that there was a response (i.e. ensure Steam's servers aren't down).
-		if (strpos($responses[0], 'response') === FALSE)
-		{	
-			return false;
-		}
-		
-		for ($n = 0; $n <= count($users); $n++)
-		{
-			$user = $users[$n];
-			$response = $responses[$n];
-			
-			// Occasionally Steam's servers return a response with no values. If so, don't update info for the current user.
-			if (strpos($response, 'steamid') === FALSE)
-			{
-				continue;
-			}
-
-			// Decode response (returned in JSON), then create array of important fields. Escape them and remove nasty special characters.
-			$decoded = json_decode($response);
-
-			$steam_update['users'][$user['uid']] = array (
-				'username' => $db->escape_string($user['username']),
-				'steamname' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->personaname)),
-				'steamurl' => $db->escape_string($decoded->response->players[0]->profileurl),
-				'steamavatar' => $decoded->response->players[0]->avatar,
-				'steamstatus' => $decoded->response->players[0]->personastate,
-				'steamgame' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->gameextrainfo))
-			);	
-		}
-		$steam_update['time'] = TIME_NOW;
-		
-		return $steam_update;
 	}
+	else
+	{	
+		while ($user = $db->fetch_array($query))
+		{
+			$users[] = $user;
+		}
+	}
+
+	// Only run if users to display
+	if (!$users)
+	{
+		return false;
+	}
+	
+	// Generate list of URLs for contacting Steam's servers.
+	foreach ($users as $user)
+	{
+		$data[] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
+	}
+
+	// Fetch data from Steam's servers.
+	$responses = multiRequest($data);	
+	
+	// Check that there was a response (i.e. ensure Steam's servers aren't down).
+	if (strpos($responses[0], 'response') === FALSE)
+	{	
+		return false;
+	}
+	
+	// Cache time of cache update.
+	$steam_update['time'] = TIME_NOW;
+	
+	// Loop through results from Steam and associate them with the users from database query.
+	for ($n = 0; $n <= count($users); $n++)
+	{
+		$user = $users[$n];
+		$response = $responses[$n];
+		
+		// Occasionally Steam's servers return a response with no values. If so, don't update info for the current user.
+		if (strpos($response, 'steamid') === FALSE)
+		{
+			continue;
+		}
+
+		// Decode response (returned in JSON), then create array of important fields. Escape them and remove nasty special characters.
+		$decoded = json_decode($response);
+
+		$steam_update['users'][$user['uid']] = array (
+			'username' => $db->escape_string($user['username']),
+			'steamname' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->personaname)),
+			'steamurl' => $db->escape_string($decoded->response->players[0]->profileurl),
+			'steamavatar' => $decoded->response->players[0]->avatar,
+			'steamstatus' => $decoded->response->players[0]->personastate,
+			'steamgame' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->gameextrainfo))
+		);	
+	}
+
+	return $steam_update;
 }
 
 /*
@@ -1028,16 +1058,8 @@ function mysteam_build_list()
 			$steam_presort_online[] = $steam_presort;
 		}
 	}
-	
-	if(!empty($steam_presort_game))
-	{
-		$steam['users'] = array_merge($steam_presort_game, $steam_presort_online);
-	}
-	else
-	{
-		$steam['users'] = $steam_presort_online;
-	}
-	
+
+	$steam['users'] = array_merge((array)$steam_presort_game, (array)$steam_presort_online);
 	$n = 0;
 	
 	// Check each user's info and generate a status entry.
@@ -1130,7 +1152,7 @@ function mysteam_build_list()
 			
 			if ($n > $mybb->settings['mysteam_list_number'])
 			{
-				continue;
+				break;
 			}
 		}
 
@@ -1261,7 +1283,7 @@ function mysteam_postbit(&$post)
 		
 		if ($steam)
 		{
-			$post = $post + $steam['users'][$post['uid']];
+			$post = array_merge($post, $steam['users'][$post['uid']]);
 			mysteam_status($post);
 		}
 	}
@@ -1288,7 +1310,7 @@ function mysteam_profile()
 		
 		if ($steam)
 		{
-			$memprofile = $memprofile + $steam['users'][$memprofile['uid']];
+			$memprofile = array_merge($memprofile, $steam['users'][$memprofile['uid']]);
 			mysteam_status($memprofile);
 			eval("\$steamname = \"".$templates->get("mysteam_contact")."\";");
 		}
@@ -1451,64 +1473,60 @@ function mysteam_modcp()
 	eval("\$steamform = \"".$templates->get("mysteam_modcp")."\";");
 }
 
-// Only load if function not already called (may be if using with ASB sidebox).
-if (!function_exists('multiRequest'))
+// Function for making multiple requests to a server to get file contents (http://www.phpied.com/simultaneuos-http-requests-in-php-with-curl/).
+function multiRequest($data, $options = array()) 
 {
-	// Function for making multiple requests to a server to get file contents (http://www.phpied.com/simultaneuos-http-requests-in-php-with-curl/).
-	function multiRequest($data, $options = array()) 
-	{
-		// array of curl handles
-		$curly = array();
-		// data to be returned
-		$result = array();
+	// array of curl handles
+	$curly = array();
+	// data to be returned
+	$result = array();
 
-		// multi handle
-		$mh = curl_multi_init();
+	// multi handle
+	$mh = curl_multi_init();
 
-		// loop through $data and create curl handles
-		// then add them to the multi-handle
-		foreach ($data as $id => $d) {
+	// loop through $data and create curl handles
+	// then add them to the multi-handle
+	foreach ($data as $id => $d) {
 
-		$curly[$id] = curl_init();
+	$curly[$id] = curl_init();
 
-		$url = (is_array($d) && !empty($d['url'])) ? $d['url'] : $d;
-		curl_setopt($curly[$id], CURLOPT_URL, $url);
-		curl_setopt($curly[$id], CURLOPT_HEADER, 0);
-		curl_setopt($curly[$id], CURLOPT_RETURNTRANSFER, 1);
+	$url = (is_array($d) && !empty($d['url'])) ? $d['url'] : $d;
+	curl_setopt($curly[$id], CURLOPT_URL, $url);
+	curl_setopt($curly[$id], CURLOPT_HEADER, 0);
+	curl_setopt($curly[$id], CURLOPT_RETURNTRANSFER, 1);
 
-		// post?
-		if (is_array($d)) {
-		  if (!empty($d['post'])) {
-			curl_setopt($curly[$id], CURLOPT_POST,       1);
-			curl_setopt($curly[$id], CURLOPT_POSTFIELDS, $d['post']);
-		  }
-		}
-
-		// extra options?
-		if (!empty($options)) {
-		  curl_setopt_array($curly[$id], $options);
-		}
-
-		curl_multi_add_handle($mh, $curly[$id]);
-		}
-
-		// execute the handles
-		$running = null;
-		do {
-		curl_multi_exec($mh, $running);
-		} while($running > 0);
-
-
-		// get content and remove handles
-		foreach($curly as $id => $c) {
-		$result[$id] = curl_multi_getcontent($c);
-		curl_multi_remove_handle($mh, $c);
-		}
-
-		// all done
-		curl_multi_close($mh);
-
-		return $result;
+	// post?
+	if (is_array($d)) {
+	  if (!empty($d['post'])) {
+		curl_setopt($curly[$id], CURLOPT_POST,       1);
+		curl_setopt($curly[$id], CURLOPT_POSTFIELDS, $d['post']);
+	  }
 	}
+
+	// extra options?
+	if (!empty($options)) {
+	  curl_setopt_array($curly[$id], $options);
+	}
+
+	curl_multi_add_handle($mh, $curly[$id]);
+	}
+
+	// execute the handles
+	$running = null;
+	do {
+	curl_multi_exec($mh, $running);
+	} while($running > 0);
+
+
+	// get content and remove handles
+	foreach($curly as $id => $c) {
+	$result[$id] = curl_multi_getcontent($c);
+	curl_multi_remove_handle($mh, $c);
+	}
+
+	// all done
+	curl_multi_close($mh);
+
+	return $result;
 }
 ?>

@@ -5,7 +5,7 @@ MySteam Powered
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 1.0
+* Version: 1.0.1
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
@@ -40,6 +40,10 @@ Owners of gaming-related forums take heed! Here be a plugin for the MyBB forum s
 
 * To use with Advanced Sidebox (ASB), you MUST have ASB v2.0.5 or later. If ASB is installed, the ASB module will be automatically installed into your ASB directory when you install the plugin. 
 
+## How to Upgrade
+
+Simply deactivate the current version on your forum, upload the new version, then reactivate it.
+
 ## Setting It Up
 
 * Steam Web API Key: Before anything will work, you must acquire (if you haven't already) a Steam Web API Key. A link for obtaining one is listed in Settings.
@@ -69,6 +73,12 @@ If you notice a bug, you should report it in the Issues sections of the GitHub p
 You can also ask for support (bug-related or not) in the release thread: 
 
 ## Changelog
+
+* 1.0.1 - A small hotfix release. The following issues SHOULD be fixed:
+	* Fixed an issue on the Complete List page that would cause PHP to throw errors if there were no users in-game or online (GitHub Issue #2).
+	* Fixed an issue that would sometimes cause PHP to throw an "unsupported operand" error on the profile and post bit pages (GitHub Issue #3).
+	* Version number is now cached (to make future upgrades easier).
+	* Various code optimizations (including removing some leftover code from development builds that I missed before).
 
 * 1.0 - Initial release.
 

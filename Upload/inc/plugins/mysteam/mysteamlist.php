@@ -16,7 +16,7 @@ if(!defined('IN_MYBB') || !defined('IN_ASB'))
 /*
  * asb_mysteamlist_info()
  *
- * Provides info to ASB about the addon (including settings).
+ * Provides info to ASB about the addon.
  *
  * @return: (array) the module info.
  */
@@ -60,7 +60,7 @@ function asb_mysteamlist_info()
 		'title' => $lang->asb_mysteam_title,
 		'description' => $lang->asb_mysteam_desc,
 		'wrap_content'	=> true,
-		'version' => '1.0',
+		'version' => '1.0.1',
 		'xmlhttp' => true,
 		'settings' =>	array
 		(
@@ -124,10 +124,9 @@ EOF
 /*
  * asb_mysteamlist_build_template()
  *
- * Handles display of children of this addon at page load.
+ * Handles display of children of this addon at page load
  *
  * @param - $args - (array) the specific information from the child box
- *
  * @return: (bool) true on success, false on fail/no content
  */
 function asb_mysteamlist_build_template($args)
@@ -153,7 +152,7 @@ function asb_mysteamlist_build_template($args)
 	}
 
 	// If there are Steam users to display . . .
-	if ($asb_mysteamlist)
+	if($asb_mysteamlist)
 	{
 		// set out template variable to the returned statuses list and return true
 		$$template_var = $asb_mysteamlist;
@@ -171,10 +170,9 @@ EOF;
 /*
  * asb_mysteamlist_xmlhttp()
  *
- * Handles display of children of this addon via AJAX.
+ * Handles display of children of this addon via AJAX
  *
- * @param - $args - (array) the specific information from the child box.
- *
+ * @param - $args - (array) the specific information from the child box
  * @return: n/a
  */	
 function asb_mysteamlist_xmlhttp($args)
@@ -240,15 +238,7 @@ function asb_mysteamlist_build_list($settings, $width)
 		}
 	}
 	
-	if(!empty($steam_presort_game))
-	{
-		$steam['users'] = array_merge($steam_presort_game, $steam_presort_online);
-	}
-	else
-	{
-		$steam['users'] = $steam_presort_online;
-	}
-	
+	$steam['users'] = array_merge((array)$steam_presort_game, (array)$steam_presort_online);	
 	$n = 0;
 
 	// Check each user's info and generate status entry.
@@ -341,7 +331,7 @@ function asb_mysteamlist_build_list($settings, $width)
 			
 			if ($n > (int) $settings['asb_steam_list_number']['value'])
 			{
-				continue;
+				break;
 			}
 		}
 		
@@ -351,66 +341,5 @@ function asb_mysteamlist_build_list($settings, $width)
 	// Set template variable to returned statuses list and return true
 	eval("\$asb_mysteamlist = \"" . $templates->get("asb_mysteam") . "\";");
 	return $asb_mysteamlist;
-}
-
-// Only load if function not already called (if sidebox is running on same page as a main plugin function).
-if (!function_exists('multiRequest'))
-{
-	// Function for making multiple requests to a server to get file contents (http://www.phpied.com/simultaneuos-http-requests-in-php-with-curl/).
-	function multiRequest($data, $options = array()) 
-	{
-		// array of curl handles
-		$curly = array();
-		// data to be returned
-		$result = array();
-
-		// multi handle
-		$mh = curl_multi_init();
-
-		// loop through $data and create curl handles
-		// then add them to the multi-handle
-		foreach ($data as $id => $d) {
-
-		$curly[$id] = curl_init();
-
-		$url = (is_array($d) && !empty($d['url'])) ? $d['url'] : $d;
-		curl_setopt($curly[$id], CURLOPT_URL, $url);
-		curl_setopt($curly[$id], CURLOPT_HEADER, 0);
-		curl_setopt($curly[$id], CURLOPT_RETURNTRANSFER, 1);
-
-		// post?
-		if (is_array($d)) {
-		  if (!empty($d['post'])) {
-			curl_setopt($curly[$id], CURLOPT_POST,       1);
-			curl_setopt($curly[$id], CURLOPT_POSTFIELDS, $d['post']);
-		  }
-		}
-
-		// extra options?
-		if (!empty($options)) {
-		  curl_setopt_array($curly[$id], $options);
-		}
-
-		curl_multi_add_handle($mh, $curly[$id]);
-		}
-
-		// execute the handles
-		$running = null;
-		do {
-		curl_multi_exec($mh, $running);
-		} while($running > 0);
-
-
-		// get content and remove handles
-		foreach($curly as $id => $c) {
-		$result[$id] = curl_multi_getcontent($c);
-		curl_multi_remove_handle($mh, $c);
-		}
-
-		// all done
-		curl_multi_close($mh);
-
-		return $result;
-	}
 }
 ?>
