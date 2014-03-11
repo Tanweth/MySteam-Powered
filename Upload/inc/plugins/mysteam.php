@@ -1270,7 +1270,7 @@ function mysteam_status(&$steam)
  */
 function mysteam_postbit(&$post)
 {
-	global $lang, $mybb;
+	global $lang;
 	
 	if (!$lang->mysteam)
 	{
@@ -1296,7 +1296,7 @@ function mysteam_postbit(&$post)
  */
 function mysteam_profile()
 {
-	global $lang, $memprofile, $mybb, $templates, $steamname;
+	global $lang, $memprofile, $templates, $steamname;
 	
 	if (!$lang->mysteam)
 	{

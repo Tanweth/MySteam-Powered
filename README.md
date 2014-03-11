@@ -9,7 +9,7 @@ MySteam Powered
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
-* Release thread: 
+* Release thread: http://community.mybb.com/thread-151564.html
 * Website: http://kerfufflealliance.com
 
 Owners of gaming-related forums take heed! Here be a plugin for the MyBB forum software that seamlessly integrates features from Valve's industrious gaming client with your forums. Also integrates with Advanced Sidebox (https://github.com/WildcardSearch/Advanced-Sidebox) if installed.
