@@ -1492,8 +1492,8 @@ function multiRequest($data, $options = array())
 	curl_setopt($curly[$id], CURLOPT_URL, $url);
 	curl_setopt($curly[$id], CURLOPT_HEADER, 0);
 	curl_setopt($curly[$id], CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($curly[$id], CURLOPT_TIMEOUT, 15);
-	curl_setopt($curly[$id], CURLOPT_CONNECTTIMEOUT, 15);
+	curl_setopt($curly[$id], CURLOPT_TIMEOUT, 10);
+	curl_setopt($curly[$id], CURLOPT_CONNECTTIMEOUT, 10);
 
 	// post?
 	if (is_array($d)) {

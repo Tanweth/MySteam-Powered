@@ -86,8 +86,7 @@ $l['mysteam_away'] = "Away";
 $l['mysteam_snooze'] = "Snooze";
 $l['mysteam_looking_to_trade'] = "Looking to Trade";
 $l['mysteam_looking_to_play'] = "Looking to Play";
-$l['mysteam_none_found'] = "
-Could not connect to the Steam network. This could be due to a problem with the Steam network, a problem with the forum's configuration, or because no users currently have Steam IDs integrated. A new connection will be attempted every 3 minutes (or on every page load if caching is disabled).";
+$l['mysteam_none_found'] = "Could not connect to the Steam network. This could be due to a problem with the Steam network, a problem with the forum's configuration, or because no users currently have Steam IDs integrated. A new connection will be attempted every 3 minutes (or on every page load if caching is disabled).";
 $l['mysteam_complete_list'] = "Complete List";
 
 // Member profile page
