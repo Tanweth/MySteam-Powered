@@ -68,7 +68,7 @@ function mysteam_info()
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
-		'version'		=> '1.0.1',
+		'version'		=> '1.0.2',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
 		'compatibility' => '16*'
 	);
@@ -106,7 +106,6 @@ function mysteam_info()
 		'disporder'		=> '212',
 		'isdefault'		=> '0',
 	);
-	$group = array_map(array($db, 'escape_string'), $group);
 	$db->insert_query('settinggroups', $group);
 	$gid = $db->insert_id();
 	$group_gid = (int) $gid;	
@@ -121,7 +120,6 @@ function mysteam_info()
 		'disporder'		=> '1',
 		'gid'			=> $group_gid,
 	);
-	
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
@@ -134,7 +132,6 @@ function mysteam_info()
 		'disporder'		=> '2',
 		'gid'			=> $group_gid,
 	);
-	
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
@@ -147,7 +144,6 @@ function mysteam_info()
 		'disporder'		=> '3',
 		'gid'			=> $group_gid,
 	);
-	
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
@@ -160,7 +156,6 @@ function mysteam_info()
 		'disporder'		=> '4',
 		'gid'			=> $group_gid,
 	);
-	
 	$db->insert_query('settings', $setting);
 	
 	// Generate link to status list settings.	
@@ -780,6 +775,7 @@ function mysteam_templatelist()
 	}
 }
 
+global $mybb;
 
 // Check which plugins hooks should be run based on plugin settings. Don't run any if no API key supplied.
 if ($mybb->settings['mysteam_apikey'])
@@ -998,7 +994,7 @@ function mysteam_build_cache()
 		$response = $responses[$n];
 		
 		// Occasionally Steam's servers return a response with no values. If so, don't update info for the current user.
-		if (strpos($response, 'steamid') === FALSE)
+		if (strpos($response, 'personastate') === FALSE)
 		{
 			continue;
 		}
@@ -1281,9 +1277,10 @@ function mysteam_postbit(&$post)
 	{
 		$steam = mysteam_check_cache();
 		
-		if ($steam)
+		// Don't display anything for user if there's no status info stored for the user (may happen if Steam returns a bad response for the user)
+		if (isset($steam['users'][$post['uid']]['steamstatus']))
 		{
-			$post = array_merge($post, $steam['users'][$post['uid']]);
+			$post = array_merge($post, (array)$steam['users'][$post['uid']]);
 			mysteam_status($post);
 		}
 	}
@@ -1308,9 +1305,10 @@ function mysteam_profile()
 	{
 		$steam = mysteam_check_cache();
 		
-		if ($steam)
+		// Don't display anything for user if there's no status info stored for the user (may happen if Steam returns a bad response for the user)
+		if (isset($steam['users'][$memprofile['uid']]['steamstatus']))
 		{
-			$memprofile = array_merge($memprofile, $steam['users'][$memprofile['uid']]);
+			$memprofile = array_merge($memprofile, (array)$steam['users'][$memprofile['uid']]);
 			mysteam_status($memprofile);
 			eval("\$steamname = \"".$templates->get("mysteam_contact")."\";");
 		}
@@ -1494,6 +1492,8 @@ function multiRequest($data, $options = array())
 	curl_setopt($curly[$id], CURLOPT_URL, $url);
 	curl_setopt($curly[$id], CURLOPT_HEADER, 0);
 	curl_setopt($curly[$id], CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curly[$id], CURLOPT_TIMEOUT, 15);
+	curl_setopt($curly[$id], CURLOPT_CONNECTTIMEOUT, 15);
 
 	// post?
 	if (is_array($d)) {

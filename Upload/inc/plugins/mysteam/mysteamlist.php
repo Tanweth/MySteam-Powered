@@ -338,8 +338,12 @@ function asb_mysteamlist_build_list($settings, $width)
 		eval("\$asb_list_entries .= \"" . $templates->get("mysteam_list_user") . "\";");
 	}
 	
-	// Set template variable to returned statuses list and return true
-	eval("\$asb_mysteamlist = \"" . $templates->get("asb_mysteam") . "\";");
-	return $asb_mysteamlist;
+	if ($asb_list_entries)
+	{
+		// Set template variable to returned statuses list and return true
+		eval("\$asb_mysteamlist = \"" . $templates->get("asb_mysteam") . "\";");
+		return $asb_mysteamlist;
+	}
+	return false;
 }
 ?>
