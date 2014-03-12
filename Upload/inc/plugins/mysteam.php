@@ -12,6 +12,8 @@ if(!defined('IN_MYBB'))
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
+global $mybb;
+
 /*
  * mysteam_info()
  *
@@ -774,8 +776,6 @@ function mysteam_templatelist()
 		}
 	}
 }
-
-global $mybb;
 
 // Check which plugins hooks should be run based on plugin settings. Don't run any if no API key supplied.
 if ($mybb->settings['mysteam_apikey'])
