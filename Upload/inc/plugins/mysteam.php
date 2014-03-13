@@ -68,7 +68,7 @@ function mysteam_info()
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
-		'version'		=> '1.0.2',
+		'version'		=> '1.1',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
 		'compatibility' => '16*'
 	);
@@ -82,6 +82,11 @@ function mysteam_info()
  function mysteam_install()
  {
 	global $db, $lang;
+	
+	if(!$lang->mysteam)
+	{
+		$lang->load('mysteam');
+	}
 
 	// Add Steam ID database field
  	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD steamid varchar(30) NOT NULL");
@@ -103,7 +108,7 @@ function mysteam_info()
 		'title'			=> $lang->mysteam_list_group_title,
 		'name'			=> 'mysteam_list_group',
 		'description'	=> $lang->mysteam_list_group_desc,
-		'disporder'		=> '212',
+		'disporder'		=> '216',
 		'isdefault'		=> '0',
 	);
 	$db->insert_query('settinggroups', $group);
@@ -174,7 +179,7 @@ function mysteam_info()
 		'title'			=> $lang->mysteam_title,
 		'name'			=> 'mysteam_main_group',
 		'description'	=> $lang->mysteam_main_group_desc,
-		'disporder'		=> '211',
+		'disporder'		=> '215',
 		'isdefault'		=> '0',
 	);
 	$db->insert_query('settinggroups', $group);
@@ -274,12 +279,24 @@ no='.$lang->mysteam_postbit_no
 	
 	$setting = array(
 		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_hover',
+		'title'			=> $lang->mysteam_hover_title,
+		'description'	=> $lang->mysteam_hover_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> '8',
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_prune',
 		'title'			=> $lang->mysteam_prune_title,
 		'description'	=> $lang->mysteam_prune_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '0',
-		'disporder'		=> '8',
+		'disporder'		=> '9',
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -291,7 +308,7 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_usercp_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '9',
+		'disporder'		=> '10',
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -303,7 +320,7 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_modcp_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '10',
+		'disporder'		=> '11',
 		'gid'			=> $group_gid,
 	);	
 	$db->insert_query('settings', $setting);
@@ -398,15 +415,58 @@ no='.$lang->mysteam_postbit_no
  */
 function mysteam_upgrade()
 {
-	global $cache;
+	global $cache, $db, $lang;
 	
-	$mysteam = $cache->read('mysteam');
+	if(!$lang->mysteam)
+	{
+		$lang->load('mysteam');
+	}
+	
+	$mysteam_cache = $cache->read('mysteam');
+	$version['cache'] = $mysteam_cache['version'];
+	$mysteam_info = mysteam_info();
+	$version['new'] = $mysteam_info['version'];
 	
 	// If no version specified (was the case with v1.0) and ASB is installed, upgrade the ASB module.
-	if (!$mysteam['version'] && file_exists(MYBB_ROOT.'inc/plugins/asb.php'))
+	if (!$version['cache'] && file_exists(MYBB_ROOT.'inc/plugins/asb.php'))
 	{
 		@copy(MYBB_ROOT.'inc/plugins/mysteam/mysteamlist.php', MYBB_ROOT.'inc/plugins/asb/modules/mysteamlist.php');
 	}
+	
+	// If current version is earlier than v1.1, add the new hover setting and CSS stylesheet.
+	if (version_compare($version['cache'], '1.1', '<'))
+	{
+		$query = $db->simple_select("settinggroups", "gid", "name='mysteam_main_group'");
+		$gid = $db->fetch_field($query, 'gid');
+		
+		$setting = array(
+			'sid'			=> 'NULL',
+			'name'			=> 'mysteam_hover',
+			'title'			=> $lang->mysteam_hover_title,
+			'description'	=> $lang->mysteam_hover_desc,
+			'optionscode'	=> 'yesno',
+			'value'			=> 'yes',
+			'disporder'		=> '7',
+			'gid'			=> $gid,
+		);
+		$db->insert_query('settings', $setting);
+		rebuild_settings();
+		
+		require_once MYBB_ADMIN_DIR.'inc/functions_themes.php';
+		
+		$stylesheet = @file_get_contents(MYBB_ROOT.'inc/plugins/mysteam/mysteam.css');
+		
+		$stylesheet_array = array(
+			'stylesheet'	=> $db->escape_string($stylesheet),
+			'lastmodified'	=> TIME_NOW
+		);
+		
+		$query = $db->simple_select("themestylesheets", "sid", "tid='1' AND cachefile='mysteam.css'");
+		$sid = (int) $db->fetch_field($query, 'sid');
+		$db->update_query('themestylesheets', $stylesheet_array, "sid='".$sid."'");
+	}
+	
+	return $version;
 }
  
 /*
@@ -416,20 +476,15 @@ function mysteam_upgrade()
  */
 function mysteam_activate()
 {
-	global $cache, $mybb, $db;
+	global $mybb, $cache, $db;
 	
-	// Run upgrade script (if needed)
-	mysteam_upgrade();
+	// Run upgrade script (if needed).
+	$version = mysteam_upgrade();
 	
-	// Cache version number if not cached already
-	$mysteam_cache = $cache->read('mysteam');
-	$cached_version = $mysteam_cache['version'];
-	$mysteam_info = mysteam_info();
-	$version_number = $mysteam_info['version'];
-	
-	if ($cached_version != $version_number)
+	// Update the cached version number (if needed).
+	if ($version['cache'] != $version['new'])
 	{	
-		$mysteam_update['version'] = $version_number;
+		$mysteam_update['version'] = $version['new'];
 		$cache->update('mysteam', $mysteam_update);
 	}
 	
@@ -451,6 +506,7 @@ function mysteam_activate()
 		<td class="trow2">{$list_entries}</td>
 	</tr>
 </table>
+<br />
 		'),
 		'sid'		=> '-2',
 		'version'	=> $mybb->version + 1,
@@ -518,7 +574,7 @@ function mysteam_activate()
 		'template'	=> $db->escape_string('
 <div class="{$avatar_class} steam_icon">
 	<div>
-		<img src="images/mysteam/steam_logo.jpg" height="16">
+		<a href="{$steam[\'steamurl\']}"><img src="images/mysteam/steam_logo.jpg" height="16"></a>
 	</div>
 </div>
 <div class="{$color_class} {$steam_icon_status}">{$steam_state}</div>
@@ -782,14 +838,7 @@ if ($mybb->settings['mysteam_apikey'])
 {
 	if ($mybb->settings['mysteam_list_enable'])
 	{
-		if ($mybb->settings['mysteam_index'])
-		{
-			$plugins->add_hook('index_start', 'mysteam_build_list');
-		}
-		if ($mybb->settings['mysteam_portal'])
-		{
-			$plugins->add_hook('portal_start', 'mysteam_build_list');
-		}
+		$plugins->add_hook('global_end', 'mysteam_build_list');
 	}
 	if ($mybb->settings['mysteam_postbit'])
 	{
@@ -1024,6 +1073,15 @@ function mysteam_build_list()
 {	
 	global $mybb, $lang, $templates, $list_entries, $mysteamlist;
 	
+	if (THIS_SCRIPT == 'index.php' && !$mybb->settings['mysteam_index'])
+	{
+		return false;
+	}
+	elseif (THIS_SCRIPT == 'portal.php' && !$mybb->settings['mysteam_portal'])
+	{	
+		return false;
+	}
+	
 	if (!$lang->mysteam)
 	{
 		$lang->load('mysteam');
@@ -1232,11 +1290,25 @@ function mysteam_status(&$steam)
 			// Special display style for classic post bit.
 			if ($mybb->user['classicpostbit'])
 			{
-				$steam_icon_status = 'steam_icon_status_classic';
+				if ($mybb->settings['mysteam_hover'])
+				{
+					$steam_icon_status = 'steam_icon_status_classic';
+				}
+				else
+				{
+					$steam_icon_status = 'steam_icon_status_classic_nohover';
+				}
 			}
 			else
 			{
-				$steam_icon_status = 'steam_icon_status';
+				if ($mybb->settings['mysteam_hover'])
+				{
+					$steam_icon_status = 'steam_icon_status';
+				}
+				else
+				{
+					$steam_icon_status = 'steam_icon_status_nohover';
+				}		
 			}
 			eval("\$steam['steam_status_img'] = \"".$templates->get("mysteam_postbit")."\";");
 		}

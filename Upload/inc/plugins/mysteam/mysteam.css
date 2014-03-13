@@ -113,6 +113,16 @@
 	display: block;
 }
 
+.steam_icon_status_nohover {
+    display: inline-block;
+    font-weight: bold;
+}
+
+.steam_icon_status_classic_nohover {
+    display: block;
+    font-weight: bold;
+}
+
 /* Steam icon for the User CP nav menu link */ 
 .mysteam_usercp_nav {
 	background: url(../../../images/mysteam/steam_icon.png) no-repeat left center;
