@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
  * Author: Tanweth
- * http://www.kerfufflealliance.com
+ * License: MIT (http://opensource.org/licenses/MIT)
  *
  * INSTALL FUNCTIONS
  * This file is used by the above plugin to handle installation and activation.
@@ -164,14 +164,12 @@ function mysteam_info()
 	);
 	$db->insert_query('settings', $setting);
 	
-	// Generate link to status list settings.	
+	// Generate link to status list settings.
+	$mysteam_list_enable_desc = $lang->mysteam_list_enable_desc;
+	
 	if ($group_gid)
 	{
-		$mysteam_list_enable_desc = $lang->mysteam_list_enable_desc. ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_list_settings. '</a>)';
-	}
-	else
-	{
-		$mysteam_list_enable_desc = $lang->mysteam_list_enable_desc;
+		$mysteam_list_enable_desc .= ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_list_settings. '</a>)';
 	}
 	
 	// Add main settings group, then settings.

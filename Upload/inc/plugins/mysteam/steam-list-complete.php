@@ -1,7 +1,7 @@
 <?php 
 /* Plugin Name: MySteam Powered
  * Author: Tanweth
- * http://www.kerfufflealliance.com
+ * License: MIT (http://opensource.org/licenses/MIT)
  * 
  * Steam Status Complete List
  * This page is used by the above plugin to generate a complete list of Steam users' current statuses if there are more users with statuses than allowed on the main list.

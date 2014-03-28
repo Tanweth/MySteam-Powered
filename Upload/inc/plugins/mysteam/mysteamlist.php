@@ -1,7 +1,7 @@
 <?php
 /* Module Name: MySteam Powered (Advanced Sidebox Edition)
  * Author: Tanweth
- * http://www.kerfufflealliance.com
+ * License: MIT (http://opensource.org/licenses/MIT)
  *
  * Uses the Steam Web API to generate a sidebox with a list of forum users (with associated Steam IDs) who are currently on Steam and their status.
  * Requires MyBB 1.6.x and Advanced Sidebox 2.0.5 or later.

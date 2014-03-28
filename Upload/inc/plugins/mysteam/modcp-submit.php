@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
  * Author: Tanweth
- * http://www.kerfufflealliance.com
+ * License: MIT (http://opensource.org/licenses/MIT)
  * 
  * Moderator CP Form Submit Processing
  * This script is used by the above plugin to process the Steam profile URL provided in the Steam ID form in the Moderator CP, and write the user's Steam ID to the database.
