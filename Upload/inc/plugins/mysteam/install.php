@@ -69,7 +69,7 @@ function mysteam_info()
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
-		'version'		=> '1.1',
+		'version'		=> '2.0',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
 		'compatibility' => '16*'
 	);
@@ -109,12 +109,13 @@ function mysteam_info()
 		'title'			=> $lang->mysteam_list_group_title,
 		'name'			=> 'mysteam_list_group',
 		'description'	=> $lang->mysteam_list_group_desc,
-		'disporder'		=> '216',
+		'disporder'		=> '222',
 		'isdefault'		=> '0',
 	);
 	$db->insert_query('settinggroups', $group);
 	$gid = $db->insert_id();
-	$group_gid = (int) $gid;	
+	$group_gid = (int) $gid;
+	$disporder = 1;
 	
 	$setting = array(
 		'sid'			=> 'NULL',
@@ -123,7 +124,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_index_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '1',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -135,7 +136,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_portal_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '2',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -147,7 +148,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_list_width_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '200',
-		'disporder'		=> '3',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -159,7 +160,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_list_number_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '0',
-		'disporder'		=> '4',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -178,12 +179,13 @@ function mysteam_info()
 		'title'			=> $lang->mysteam_title,
 		'name'			=> 'mysteam_main_group',
 		'description'	=> $lang->mysteam_main_group_desc,
-		'disporder'		=> '215',
+		'disporder'		=> '221',
 		'isdefault'		=> '0',
 	);
 	$db->insert_query('settinggroups', $group);
 	$gid = $db->insert_id(); 
 	$group_gid = (int) $gid;
+	$disporder = 1;
 	
 	$setting = array(
 		'sid'			=> 'NULL',
@@ -192,7 +194,7 @@ function mysteam_info()
 		'description'	=> $mysteam_list_enable_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> $list_enable_value,
-		'disporder'		=> '1',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -204,7 +206,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_apikey_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '',
-		'disporder'		=> '2',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -216,7 +218,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_limitbygroup_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '',
-		'disporder'		=> '3',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -228,7 +230,7 @@ function mysteam_info()
 		'description'	=> $lang->mysteam_cache_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '10',
-		'disporder'		=> '4',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -243,7 +245,7 @@ steam='.$lang->mysteam_displayname_steam.'
 forum='.$lang->mysteam_displayname_forum.'
 both='.$lang->mysteam_displayname_both,
 		'value'			=> 'forum',
-		'disporder'		=> '5',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -255,7 +257,7 @@ both='.$lang->mysteam_displayname_both,
 		'description'	=> $lang->mysteam_profile_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '6',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -271,11 +273,12 @@ text='.$lang->mysteam_postbit_text.'
 no='.$lang->mysteam_postbit_no
 							,
 		'value'			=> 'img',
-		'disporder'		=> '7',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
 	
+	define (DISPORDER_HOVER, $disporder);
 	$setting = array(
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_hover',
@@ -283,7 +286,7 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_hover_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '8',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -295,7 +298,7 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_prune_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '0',
-		'disporder'		=> '9',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -307,7 +310,7 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_usercp_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '10',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
 	$db->insert_query('settings', $setting);
@@ -319,7 +322,7 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_modcp_desc,
 		'optionscode'	=> 'yesno',
 		'value'			=> 'yes',
-		'disporder'		=> '11',
+		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);	
 	$db->insert_query('settings', $setting);
@@ -445,7 +448,7 @@ function mysteam_upgrade()
 			'description'	=> $lang->mysteam_hover_desc,
 			'optionscode'	=> 'yesno',
 			'value'			=> 'yes',
-			'disporder'		=> '7',
+			'disporder'		=> DISPORDER_HOVER,
 			'gid'			=> $gid,
 		);
 		$db->insert_query('settings', $setting);
