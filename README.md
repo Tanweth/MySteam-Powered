@@ -1,11 +1,15 @@
-MySteam Powered
+MySteam Powered -- UNSTABLE
 ========
+
+### This is the unstable branch of MySteam Powered. Do NOT install this on a forum!
+
+Commits to the unstable branch have often not undergone any testing yet, and may not be complete or functional. This branch is NOT for installing on a forum, it is simply where the most recent commits are pushed during development.
 
 <p align="center">
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 1.1
+* Version: 2.0
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
