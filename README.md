@@ -1,7 +1,7 @@
 MySteam Powered -- TESTING
 ========
 
-## This is the testing branch of MySteam Powered. Use with caution!
+# This is the testing branch of MySteam Powered. Use with caution!
 
 All commits to the testing branch have undergone basic testing and should be fully functional. However, they have not undergone extensive testing, so they are more likely to cause issues or not work as intended. Installing this branch on a live forum is NOT recommended!
 
