@@ -60,8 +60,7 @@ function mysteam_check_cache()
 	{
 		$steam_update['version'] = $steam['version'];
 		$cache->update('mysteam', $steam_update);
-		$steam = $cache->read('mysteam');
-		return $steam;
+		return $steam_update;
 	}
 	// If not, cache time of last attempt to contact Steam, so it can be checked later.
 	else
@@ -202,16 +201,16 @@ function mysteam_build_cache()
 			continue;
 		}
 
-		// Decode response (returned in JSON), then create array of important fields. Escape them and remove nasty special characters.
+		// Decode response (returned in JSON), then create array of important fields.
 		$decoded = json_decode($response);
 
 		$steam_update['users'][$user['uid']] = array (
-			'username' => $db->escape_string($user['username']),
-			'steamname' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->personaname)),
+			'username' => $user['username'],
+			'steamname' => htmlspecialchars_uni($decoded->response->players[0]->personaname),
 			'steamurl' => $db->escape_string($decoded->response->players[0]->profileurl),
-			'steamavatar' => $decoded->response->players[0]->avatar,
-			'steamstatus' => $decoded->response->players[0]->personastate,
-			'steamgame' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->gameextrainfo))
+			'steamavatar' => $db->escape_string($decoded->response->players[0]->avatar),
+			'steamstatus' => $db->escape_string($decoded->response->players[0]->personastate),
+			'steamgame' => htmlspecialchars_uni($decoded->response->players[0]->gameextrainfo)
 		);	
 	}
 
