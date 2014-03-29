@@ -62,6 +62,10 @@ global $mybb;
 // Check which plugins hooks should be run based on plugin settings. Don't run any if no API key supplied.
 if ($mybb->settings['mysteam_apikey'])
 {
+	if ($mybb->settings['mysteam_login_enable'])
+	{
+		$plugins->add_hook('global_end', 'mysteam_sync_info');
+	}
 	if ($mybb->settings['mysteam_list_enable'])
 	{
 		$plugins->add_hook('global_end', 'mysteam_build_list');
@@ -82,6 +86,93 @@ if ($mybb->settings['mysteam_apikey'])
 	if ($mybb->settings['mysteam_modcp'])
 	{
 		$plugins->add_hook('modcp_editprofile_end', 'mysteam_modcp');
+	}
+}
+
+/*
+ * mysteam_verify_login()
+ * 
+ * Calls mysteam_check_cache(), then uses cache output to generate Steam status entry for each user.
+ */
+function mysteam_verify_login()
+{	
+	global $mybb;
+	
+	// Redirect user to Steam Community website for logging in through Steam.
+	if ($mybb->input['action'] == 'steam_login')
+	{
+		mysteam_redirect_to_login();
+	}
+	
+	if ($mybb->input['action'] == 'steam_return')
+	{
+		require_once MYBB_ROOT.'inc/plugins/mysteam/openid.php';
+		require_once MYBB_ROOT.'inc/functions.php';
+		require_once MYBB_ROOT.'inc/class_session.php';
+		
+		// Validate the Steam sign in using the LightOpenID library.
+		$bburl = parse_url($mybb->settings['bburl']);
+		$openid = new LightOpenID($bburl['host']);
+		$openid->validate();
+		
+		// Parse the URL returned by Steam Community to obtain the user's Steam ID.
+		$claimed_id = parse_url($openid->identity);
+		$steamid = substr($claimed_id['path'], 10);
+		
+		
+	}
+}
+
+/*
+ * mysteam_sync_info()
+ * 
+ * Checks the user's current forum name and avatar against Steam's, and updates it if it is out of sync with Steam.
+ *
+ * return: (bool) false if user isn't logged in, doesn't have a Steam ID associated, or doesn't have any Steam info stored.
+ */
+function mysteam_sync_info()
+{
+	global $mybb, $cache;
+	
+	// If user isn't logged in or doesn't have a Steam ID associated, do nothing.
+	if (!$mybb->user['uid'] || !$mybb->user['steamid'])
+	{
+		return false;
+	}
+	
+	$steam_cache = $cache->read('mysteam');
+	$steam = $steam_cache['users'][$mybb->user['uid']];
+	
+	// If there's no Steam info stored for user (may happen if Steam returns a bad response for the user), do nothing.
+	if (!isset($steam['steamstatus']))
+	{
+		return false;
+	}
+	
+	$maxavatardims = explode('x', $mybb->settings['maxavatardims'])
+	
+	// Set which Steam avatar size to use based upon maximum avatar dimensions on forums.
+	if ($maxavatardims[0] >= '184' && $maxavatardims[1] >= '184')
+	{
+		$steam['steamavatar'] == $steam['steamavatar_full'];
+	}
+	elseif ($maxavatardims[0] >= '64' && $maxavatardims[1] >= '64')
+	{
+		$steam['steamavatar'] == $steam['steamavatar_medium'];
+	}
+	
+	if ($mybb->settings['mysteam_login_username'] && $mybb->user['steamnamesync'] && $mybb->user['username'] != $steam['steamname'])
+	{
+		$update_array['username'] = $steam['steamname'];
+	}
+	if ($mybb->settings['mysteam_login_avatar'] && $mybb->user['steamavatarsync'] && $mybb->user['avatar'] != $steam['steamavatar'])
+	{
+		$update_array['avatar'] = $steam['steamavatar'];
+	}
+	
+	if ($update_array)
+	{
+		$db->update_query("users", $update_array, "uid='" .$mybb->user['uid']. "'");
 	}
 }
 
@@ -261,7 +352,7 @@ function mysteam_postbit(&$post)
 	{
 		$steam = mysteam_check_cache();
 		
-		// Don't display anything for user if there's no status info stored for the user (may happen if Steam returns a bad response for the user)
+		// Don't display anything for user if no status info stored (may happen if Steam returns a bad response for the user)
 		if (isset($steam['users'][$post['uid']]['steamstatus']))
 		{
 			$post = array_merge($post, (array)$steam['users'][$post['uid']]);
@@ -289,7 +380,7 @@ function mysteam_profile()
 	{
 		$steam = mysteam_check_cache();
 		
-		// Don't display anything for user if there's no status info stored for the user (may happen if Steam returns a bad response for the user)
+		// Don't display anything for user if there's no status info stored for the user (may happen if Steam returns a bad response for the user).
 		if (isset($steam['users'][$memprofile['uid']]['steamstatus']))
 		{
 			$memprofile = array_merge($memprofile, (array)$steam['users'][$memprofile['uid']]);
@@ -406,7 +497,7 @@ function mysteam_usercp()
 					else
 					{
 						$steamid = $db->escape_string($xml->steamID64);
-						$db->update_query("users", array('steamid' => $steamid), "uid='".$uid."'");
+						$db->update_query("users", array('steamid' => $steamid), "uid='" .$uid. "'");
 						
 						$submit_message = 
 							'<p><strong>' .$lang->mysteam_submit_success. '</strong></p>

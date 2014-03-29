@@ -91,7 +91,9 @@ function mysteam_info()
 
 	// Add Steam ID database field
  	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD steamid varchar(30) NOT NULL");
-
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD steamnamesync int(1) NOT NULL");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD steamavatarsync int(1) NOT NULL");
+	
 	// If Advanced Sidebox is installed, install ASB module and disable plugin's list functionality by default.
 	if (file_exists(MYBB_ROOT.'inc/plugins/asb.php'))
 	{

@@ -93,6 +93,9 @@ $l['mysteam_index_desc'] = "If enabled, a Steam status list will be displayed on
 $l['mysteam_portal_title'] = "Display Status List on Portal?";
 $l['mysteam_portal_desc'] = "If enabled, a Steam status list will be displayed on the Portal page.";
 
+// Steam login
+$l['mysteam_login_redirect'] = 'You are being redirected to Steam Community to sign in to our forums through Steam.';
+
 // Steam status list
 $l['mysteam_in_game'] = "In-Game";
 $l['mysteam_offline'] = "Offline";

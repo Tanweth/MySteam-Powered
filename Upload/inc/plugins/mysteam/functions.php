@@ -14,6 +14,30 @@ if(!defined('IN_MYBB'))
 }
 
 /*
+ * mysteam_redirect_to_login()
+ * 
+ * Redirects user signing in through Steam to Steam Community website for authentication.
+ */
+function mysteam_redirect_to_login()
+{
+	global $mybb;
+	
+	if (!$mybb->user['uid'])
+	{
+		// Pull in the LightOpenID library to allow OpenID authentication.
+		require_once MYBB_ROOT.'inc/plugins/mysteam/openid.php';
+		
+		// Obtain the forums' domain name, then set parameters for authentication
+		$bburl = parse_url($mybb->settings['bburl']);
+		$openid = new LightOpenID($bburl['host']);
+		$openid->returnUrl = $mybb->settings['bburl'].'/member.php?action=steam-return';
+		$openid->identity = 'http://steamcommunity.com/openid';
+		
+		// Redirect to Steam Community website for authentication
+		redirect($openid->authUrl(), $lang->mysteam_login_redirect)
+}
+
+/*
  * mysteam_check_cache()
  * 
  * Checks mysteam cache, calls mysteam_build_cache() if it is older than allowed lifespan, updates cache with new info, then reads new cache.
@@ -138,11 +162,11 @@ function mysteam_build_cache()
 	if ($mybb->settings['mysteam_prune'])
 	{
 		$cutoff = TIME_NOW - (86400 * (int) $mybb->settings['mysteam_prune']);
-		$cutoff_query = 'AND lastvisit > ' .$cutoff;
+		$cutoff_query = 'AND lastvisit > ' . $cutoff;
 	}
 	
 	// Retrieve all members who have Steam IDs from the database.
-	$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, steamid", "steamid IS NOT NULL AND steamid<>''" .$cutoff_query, array("order_by" => 'username'));
+	$query = $db->simple_select("users", "uid, username, avatar, usergroup, additionalgroups, steamid", "steamid IS NOT NULL AND steamid<>''" . $cutoff_query, array("order_by" => 'username'));
 
 	// Check if there are usergroups to limit the results to.
 	if ($mybb->settings['mysteam_limitbygroup'])
@@ -202,17 +226,19 @@ function mysteam_build_cache()
 			continue;
 		}
 
-		// Decode response (returned in JSON), then create array of important fields. Escape them and remove nasty special characters.
+		// Decode response (returned in JSON), then create array of important fields.
 		$decoded = json_decode($response);
 
 		$steam_update['users'][$user['uid']] = array (
-			'username' => $db->escape_string($user['username']),
-			'steamname' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->personaname)),
+			'username' => $user['username'],
+			'steamname' => htmlspecialchars_uni($decoded->response->players[0]->personaname)),
 			'steamurl' => $db->escape_string($decoded->response->players[0]->profileurl),
-			'steamavatar' => $decoded->response->players[0]->avatar,
-			'steamstatus' => $decoded->response->players[0]->personastate,
-			'steamgame' => $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,:&_]+/", "", $decoded->response->players[0]->gameextrainfo))
-		);	
+			'steamavatar' => $db->escape_string($decoded->response->players[0]->avatar),
+			'steamavatar_medium' => $db->escape_string($decoded->response->players[0]->avatarmedium),
+			'steamavatar_full' => $db->escape_string($decoded->response->players[0]->avatarfull),
+			'steamstatus' => $db->escape_string($decoded->response->players[0]->personastate),
+			'steamgame' => htmlspecialchars_uni($decoded->response->players[0]->gameextrainfo))
+		);
 	}
 
 	return $steam_update;
