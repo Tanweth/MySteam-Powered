@@ -30,6 +30,8 @@ $l['mysteam_list_group_desc'] = "Configure the built-in (non-Advanced Sidebox) S
 $l['mysteam_template_group'] = "MySteam Powered";
 
 // Main settings
+$l['mysteam_list_enable_title'] = "Enable Login with Steam Functionality?";
+$l['mysteam_list_enable_desc'] = "If yes, users will be able to log in using their Steam account rather than registering normally.";
 $l['mysteam_list_enable_title'] = "Enable non-Advanced Sidebox Status List?";
 $l['mysteam_list_enable_desc'] = "If yes, a status list like the one in the Advanced Sidebox module will be displayed on the Index and/or Portal pages. It can be used with the ASB module, though it will repeat functionality if used on the same page.";
 $l['mysteam_list_settings'] = "List Settings";
@@ -65,6 +67,19 @@ $l['mysteam_list_width_title'] = "Width of Each Status Entry";
 $l['mysteam_list_width_desc'] = "Set the width (in pixels) of each entry in the status list. This setting also controls how many rows and columns there are (lower widths result in more columns).";
 $l['mysteam_list_number_title'] = "Maximum Number of Users to Display";
 $l['mysteam_list_number_desc'] = "Set the maximum number of users you want to be displayed. 0 disables this, so all online users will be listed. Changes take effect on the next cache refresh.";
+
+// Settings for Steam login
+$l['mysteam_login_username_title'] = "Sync Forum Username with Steam?";
+$l['mysteam_login_username_desc'] = "If yes, users with Steam-linked accounts will be able to automatically sync their forum username with their Steam name.";
+$l['mysteam_login_avatar_title'] = "Sync Forum Avatar with Steam?";
+$l['mysteam_login_avatar_desc'] = "If yes, users with Steam-linked accounts will be able to automatically sync their forum avatar with their Steam avatar.";
+$l['mysteam_login_level_title'] = "Display Steam Level?";
+$l['mysteam_login_level_desc'] = "If yes, users with Steam-linked accounts will be able to display their Steam level on their profile and post bit (if enabled below).";
+$l['mysteam_login_level_profile'] = "Yes, display the Steam level on the profile only.";
+$l['mysteam_login_level_both'] = "Yes, display the Steam level on both the profile and post bit.";
+$l['mysteam_login_level_no'] = "No, do not display the Steam level of the user.";
+$l['mysteam_login_recentlyplayed_title'] = "Display Recently Played Games?";
+$l['mysteam_login_recentlyplayed_desc'] = "If yes, users with Steam-linked accounts will be able to display a list of games that they have recently played on their profile. NB: Enabling this generates an extra (though infrequent) API call for every user with this enabled.";
 
 // Settings for ASB module only
 $l['mysteam_settings_where_title'] = "Where Are All The Settings?";

@@ -173,6 +173,71 @@ function mysteam_info()
 		$mysteam_list_enable_desc .= ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_list_settings. '</a>)';
 	}
 	
+	// Add Steam login settings group, then settings.
+	$group = array(
+		'gid'			=> 'NULL',
+		'title'			=> $lang->mysteam_login_group_title,
+		'name'			=> 'mysteam_login_group',
+		'description'	=> $lang->mysteam_login_group_desc,
+		'disporder'		=> '223',
+		'isdefault'		=> '0',
+	);
+	$db->insert_query('settinggroups', $group);
+	$gid = $db->insert_id();
+	$group_gid = (int) $gid;
+	$disporder = 1;
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_username',
+		'title'			=> $lang->mysteam_login_username_title,
+		'description'	=> $lang->mysteam_login_username_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_avatar',
+		'title'			=> $lang->mysteam_login_avatar_title,
+		'description'	=> $lang->mysteam_login_avatar_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_level',
+		'title'			=> $lang->mysteam_login_level_title,
+		'description'	=> $lang->mysteam_login_level_desc,
+		'optionscode'	=> 'radio
+profile='.$lang->mysteam_login_level_profile.'
+both='.$lang->mysteam_login_level_both.'
+no='.$lang->mysteam_login_level_no,
+		'value'			=> 'both',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_avatar',
+		'title'			=> $lang->mysteam_login_recentlyplayed_title,
+		'description'	=> $lang->mysteam_login_recentlyplayed_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
 	// Add main settings group, then settings.
 	$group = array(
 		'gid'			=> 'NULL',
@@ -186,6 +251,18 @@ function mysteam_info()
 	$gid = $db->insert_id(); 
 	$group_gid = (int) $gid;
 	$disporder = 1;
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_enable',
+		'title'			=> $lang->mysteam_login_enable_title,
+		'description'	=> $mysteam_list_login_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
 	
 	$setting = array(
 		'sid'			=> 'NULL',
