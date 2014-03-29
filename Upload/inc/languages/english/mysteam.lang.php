@@ -4,7 +4,6 @@
  * License: MIT (http://opensource.org/licenses/MIT)
  *
  * Uses the Steam Web API to obtain the current Steam status of forum users (with associated Steam IDs). It also provides User CP and Mod CP forms for obtaining a user's Steam ID.
- * Requires Advanced Sidebox 2.0.5 or later and installation of the Advanced Sidebox module.
  */
 
 // Title and description for the plugin

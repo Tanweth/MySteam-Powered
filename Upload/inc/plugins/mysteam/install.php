@@ -572,6 +572,17 @@ function mysteam_activate()
 
 	// Add new templates
 	$template = array(
+		'title'		=> 'mysteam_login',
+		'template'	=> $db->escape_string('
+<a href="member.php?action=steam-login"><img src="images/mysteam/steam_login_small.png" title="Sign in through Steam" alt="Sign in through Steam"></a>
+		'),
+		'sid'		=> '-2',
+		'version'	=> $mybb->version + 1,
+		'dateline'	=> TIME_NOW,
+	);
+	$db->insert_query('templates', $template);
+	
+	$template = array(
 		'title'		=> 'mysteam_list',
 		'template'	=> $db->escape_string('
 <table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
@@ -830,17 +841,30 @@ function mysteam_activate()
 
 	// Generate edits to default templates
 	require_once MYBB_ROOT.'/inc/adminfunctions_templates.php';
-
+	
+	// Steam login icon
+	find_replace_templatesets('header_welcomeblock_guest', '#'.preg_quote('{$lang->welcome_register}</a>)</span>').'#', '{$lang->welcome_register}</a>)</span>{$steam_login}');
+	// Status list on Portal
 	find_replace_templatesets('index', '#'.preg_quote('{$header}').'#', '{$header}{$mysteamlist}');
+	// Status list on Index
 	find_replace_templatesets('portal', '#'.preg_quote('{$header}').'#', '{$header}{$mysteamlist}');
+	// Status on profile
 	find_replace_templatesets('member_profile', '#'.preg_quote('{$online_status}').'#', '{$online_status}<strong>{$steam_status}</strong>');
+	// Contact link on profile
 	find_replace_templatesets('member_profile', '#'.preg_quote('{$lang->send_pm}</a></td>').'#', '{$lang->send_pm}</a></td>{$steamname}');
+	// Status image on post bit
 	find_replace_templatesets('postbit', '#'.preg_quote('{$post[\'onlinestatus\']}').'#', '{$post[\'onlinestatus\']}{$post[\'steam_status_img\']}');
+	// Status text on post bit
 	find_replace_templatesets('postbit', '#'.preg_quote('{$post[\'user_details\']}').'#', '{$post[\'user_details\']}{$post[\'steam_status\']}');
+	// Status image on classic post bit
 	find_replace_templatesets('postbit_classic', '#'.preg_quote('{$post[\'onlinestatus\']}').'#', '{$post[\'onlinestatus\']}{$post[\'steam_status_img\']}');
-	find_replace_templatesets('postbit_classic', '#'.preg_quote('{$post[\'user_details\']}').'#', '{$post[\'user_details\']}{$post[\'steam_status\']}');		
+	// Status text on classic post bit
+	find_replace_templatesets('postbit_classic', '#'.preg_quote('{$post[\'user_details\']}').'#', '{$post[\'user_details\']}{$post[\'steam_status\']}');
+	// Steam integration form on Profile Editor in Moderator CP
 	find_replace_templatesets('modcp_editprofile', '#'.preg_quote('	{$footer}').'#', '	{$steamform}{$footer}');
+	// Steam integration link on User CP navigation menu.
 	find_replace_templatesets('usercp_nav_profile', '#'.preg_quote('{$changesigop}').'#', '{$changesigop}{$steamintegration}');
+	// "Powered by Steam" notice in the footer (required by Steam Web API Terms of Use).
 	find_replace_templatesets('footer', '#'.preg_quote('<br class="clear" />').'#', 'Powered By <a href="http://steampowered.com">Steam</a>.<br class="clear" />');
 }
 
@@ -862,6 +886,7 @@ function mysteam_deactivate()
 	// Delete edits to default templates
 	require_once MYBB_ROOT.'/inc/adminfunctions_templates.php';
 
+	find_replace_templatesets('header_welcomeblock_guest', '#'.preg_quote('{$steam_login}').'#', '');
 	find_replace_templatesets('index', '#'.preg_quote('{$mysteamlist}').'#', '');
 	find_replace_templatesets('portal', '#'.preg_quote('{$mysteamlist}').'#', '');
 	find_replace_templatesets('member_profile', '#'.preg_quote('<strong>{$steam_status}</strong>').'#', '', 0);
