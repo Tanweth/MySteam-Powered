@@ -1,9 +1,9 @@
 <?php 
 /* Plugin Name: MySteam Powered
- * Author: Tanweth
- * http://www.kerfufflealliance.com
- * 
- * Steam Status Complete List
+ * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
+ *
+ * STEAM STATUS COMPLETE LIST
  * This page is used by the above plugin to generate a complete list of Steam users' current statuses if there are more users with statuses than allowed on the main list.
  */
  
