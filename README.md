@@ -1,11 +1,15 @@
-MySteam Powered
+MySteam Powered -- TESTING
 ========
+
+### This is the testing branch of MySteam Powered. Use with caution!
+
+All commits to the testing branch have undergone basic testing and should be fully functional. However, they have not undergone extensive testing, so they are more likely to cause issues or not work as intended. Installing this branch on a live forum is NOT recommended!
 
 <p align="center">
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 1.1
+* Version: 2.0
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
