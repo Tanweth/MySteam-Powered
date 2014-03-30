@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
- * Author: Tanweth
- * http://www.kerfufflealliance.com
+ * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
  *
  * INSTALL FUNCTIONS
  * This file is used by the above plugin to handle installation and activation.

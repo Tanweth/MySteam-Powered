@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
- * Author: Tanweth
- * http://www.kerfufflealliance.com
+ * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
  *
  * Uses the Steam Web API to obtain the current Steam status of forum users (with associated Steam IDs). It also provides User CP and Mod CP forms for obtaining a user's Steam ID.
  */
