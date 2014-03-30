@@ -108,8 +108,8 @@ function mysteam_info()
 		'gid'			=> 'NULL',
 		'title'			=> $lang->mysteam_list_group_title,
 		'name'			=> 'mysteam_list_group',
-		'description'	=> $lang->mysteam_list_group_desc,
-		'disporder'		=> '216',
+		'description'		=> $lang->mysteam_list_group_desc,
+		'disporder'		=> '222',
 		'isdefault'		=> '0',
 	);
 	$db->insert_query('settinggroups', $group);
@@ -179,8 +179,8 @@ function mysteam_info()
 		'gid'			=> 'NULL',
 		'title'			=> $lang->mysteam_title,
 		'name'			=> 'mysteam_main_group',
-		'description'	=> $lang->mysteam_main_group_desc,
-		'disporder'		=> '215',
+		'description'		=> $lang->mysteam_main_group_desc,
+		'disporder'		=> '221',
 		'isdefault'		=> '0',
 	);
 	$db->insert_query('settinggroups', $group);
@@ -191,8 +191,8 @@ function mysteam_info()
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_list_enable',
 		'title'			=> $lang->mysteam_list_enable_title,
-		'description'	=> $mysteam_list_enable_desc,
-		'optionscode'	=> 'yesno',
+		'description'		=> $mysteam_list_enable_desc,
+		'optionscode'		=> 'yesno',
 		'value'			=> $list_enable_value,
 		'disporder'		=> '1',
 		'gid'			=> $group_gid,
@@ -203,8 +203,8 @@ function mysteam_info()
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_apikey',
 		'title'			=> $lang->mysteam_apikey_title,
-		'description'	=> $lang->mysteam_apikey_desc,
-		'optionscode'	=> 'text',
+		'description'		=> $lang->mysteam_apikey_desc,
+		'optionscode'		=> 'text',
 		'value'			=> '',
 		'disporder'		=> '2',
 		'gid'			=> $group_gid,
@@ -215,8 +215,8 @@ function mysteam_info()
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_limitbygroup',
 		'title'			=> $lang->mysteam_limitbygroup_title,
-		'description'	=> $lang->mysteam_limitbygroup_desc,
-		'optionscode'	=> 'text',
+		'description'		=> $lang->mysteam_limitbygroup_desc,
+		'optionscode'		=> 'text',
 		'value'			=> '',
 		'disporder'		=> '3',
 		'gid'			=> $group_gid,
@@ -227,8 +227,8 @@ function mysteam_info()
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_cache',
 		'title'			=> $lang->mysteam_cache_title,
-		'description'	=> $lang->mysteam_cache_desc,
-		'optionscode'	=> 'text',
+		'description'		=> $lang->mysteam_cache_desc,
+		'optionscode'		=> 'text',
 		'value'			=> '10',
 		'disporder'		=> '4',
 		'gid'			=> $group_gid,
@@ -239,8 +239,8 @@ function mysteam_info()
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_displayname',
 		'title'			=> $lang->mysteam_displayname_title,
-		'description'	=> $lang->mysteam_displayname_desc,
-		'optionscode'	=> 'radio
+		'description'		=> $lang->mysteam_displayname_desc,
+		'optionscode'		=> 'radio
 steam='.$lang->mysteam_displayname_steam.'
 forum='.$lang->mysteam_displayname_forum.'
 both='.$lang->mysteam_displayname_both,
@@ -254,8 +254,8 @@ both='.$lang->mysteam_displayname_both,
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_profile',
 		'title'			=> $lang->mysteam_profile_title,
-		'description'	=> $lang->mysteam_profile_desc,
-		'optionscode'	=> 'yesno',
+		'description'		=> $lang->mysteam_profile_desc,
+		'optionscode'		=> 'yesno',
 		'value'			=> 'yes',
 		'disporder'		=> '6',
 		'gid'			=> $group_gid,
@@ -266,8 +266,8 @@ both='.$lang->mysteam_displayname_both,
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_postbit',
 		'title'			=> $lang->mysteam_postbit_title,
-		'description'	=> $lang->mysteam_postbit_desc,
-		'optionscode'	=> 'radio
+		'description'		=> $lang->mysteam_postbit_desc,
+		'optionscode'		=> 'radio
 img='.$lang->mysteam_postbit_img.'
 text='.$lang->mysteam_postbit_text.'
 no='.$lang->mysteam_postbit_no
@@ -282,8 +282,8 @@ no='.$lang->mysteam_postbit_no
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_hover',
 		'title'			=> $lang->mysteam_hover_title,
-		'description'	=> $lang->mysteam_hover_desc,
-		'optionscode'	=> 'yesno',
+		'description'		=> $lang->mysteam_hover_desc,
+		'optionscode'		=> 'yesno',
 		'value'			=> 'yes',
 		'disporder'		=> '8',
 		'gid'			=> $group_gid,
@@ -294,8 +294,8 @@ no='.$lang->mysteam_postbit_no
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_prune',
 		'title'			=> $lang->mysteam_prune_title,
-		'description'	=> $lang->mysteam_prune_desc,
-		'optionscode'	=> 'text',
+		'description'		=> $lang->mysteam_prune_desc,
+		'optionscode'		=> 'text',
 		'value'			=> '0',
 		'disporder'		=> '9',
 		'gid'			=> $group_gid,
@@ -318,8 +318,8 @@ no='.$lang->mysteam_postbit_no
 		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_modcp',
 		'title'			=> $lang->mysteam_modcp_title,
-		'description'	=> $lang->mysteam_modcp_desc,
-		'optionscode'	=> 'yesno',
+		'description'		=> $lang->mysteam_modcp_desc,
+		'optionscode'		=> 'yesno',
 		'value'			=> 'yes',
 		'disporder'		=> '11',
 		'gid'			=> $group_gid,
@@ -344,9 +344,9 @@ no='.$lang->mysteam_postbit_no
 		'sid'			=> NULL,
 		'name'			=> 'mysteam.css',
 		'tid'			=> '1',
-		'stylesheet'	=> $db->escape_string($stylesheet),
+		'stylesheet'		=> $db->escape_string($stylesheet),
 		'cachefile'		=> 'mysteam.css',
-		'lastmodified'	=> TIME_NOW
+		'lastmodified'		=> TIME_NOW
 	);
 	$db->insert_query('themestylesheets', $stylesheet_array);
 	cache_stylesheet(1, 'mysteam.css', $stylesheet);
