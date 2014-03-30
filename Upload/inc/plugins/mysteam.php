@@ -30,7 +30,7 @@ else
 $plugins->add_hook('global_start', 'mysteam_templatelist');
 function mysteam_templatelist()
 {
-	global $templatelist;
+	global $templatelist, $mybb;
 	
 	if(isset($templatelist))
 	{
