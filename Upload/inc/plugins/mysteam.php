@@ -34,13 +34,14 @@ function mysteam_templatelist()
 	
 	if(isset($templatelist))
 	{
+		if($mybb->settings['mysteam_list_enable'])
+		{
+			$templatelist .= ',mysteam_list,mysteam_list_user';
+		}
+		
 		if(THIS_SCRIPT == 'showthread.php')
 		{
 			$templatelist .= ',mysteam_postbit,mysteam_profile';
-		}
-		if(THIS_SCRIPT == 'index.php' || THIS_SCRIPT == 'portal.php')
-		{
-			$templatelist .= ',mysteam_list,mysteam_list_user';
 		}
 		if(THIS_SCRIPT == 'member.php')
 		{
