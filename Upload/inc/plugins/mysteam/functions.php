@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
- * Author: Tanweth
  * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
  *
  * GLOBAL FUNCTIONS
  * This file is used by the above plugin to handle global functions (i.e. ones not attached to a particular plugin hook).
@@ -40,7 +40,7 @@ function mysteam_redirect_to_login()
 /*
  * mysteam_check_cache()
  * 
- * Checks mysteam cache, calls mysteam_build_cache() if it is older than allowed lifespan, updates cache with new info, then reads new cache.
+ * Checks mysteam cache, calls mysteam_build_cache() if it is older than allowed lifespan, updates cache with new info, then returns cached info.
  * 
  * return: (mixed) an (array) of the cached Steam user info, or (bool) false on fail.
  */
@@ -84,8 +84,7 @@ function mysteam_check_cache()
 	{
 		$steam_update['version'] = $steam['version'];
 		$cache->update('mysteam', $steam_update);
-		$steam = $cache->read('mysteam');
-		return $steam;
+		return $steam_update;
 	}
 	// If not, cache time of last attempt to contact Steam, so it can be checked later.
 	else
@@ -242,6 +241,53 @@ function mysteam_build_cache()
 	}
 
 	return $steam_update;
+}
+
+/*
+ * mysteam_check_infrequent_cache()
+ * 
+ * Checks infrequently updated mysteam cache, calls mysteam_build_infrequent_cache() if it is older than allowed lifespan, updates cache with new info, then returns cached info.
+ * 
+ * return: (mixed) an (array) of the cached Steam user info, or (bool) false on fail.
+ */
+function mysteam_check_infrequent_cache()
+{	
+	global $mybb, $cache;
+	
+	$steam = $cache->read('mysteam_infrequent');
+	
+	// Convert the cache lifespan setting into seconds.
+	$cache_infrequent_lifespan = 60 * (int) $mybb->settings['mysteam_infrequent_cache'];
+	
+	// If the cache is still current enough, just return the cached info.
+	if (TIME_NOW - (int) $steam['time'] < $cache_lifespan)
+	{	
+		return $steam;
+	}	
+	
+	// If last attempt to contact Steam failed, check if it has been over 3 minutes since then. If not, return false (i.e. do not attempt another contact).
+	if (TIME_NOW - (int) $steam['lastattempt'] < 180)
+	{
+		return false;
+	}
+		
+	$steam_update = mysteam_build_cache();
+	
+	// If response generated, update the cache.
+	if ($steam_update['users'])
+	{
+		$steam_update['version'] = $steam['version'];
+		$cache->update('mysteam', $steam_update);
+		return $steam_update;
+	}
+	// If not, cache time of last attempt to contact Steam, so it can be checked later.
+	else
+	{
+		$steam_update['lastattempt'] = TIME_NOW;
+		$steam_update['version'] = $steam['version'];
+		$cache->update('mysteam', $steam_update);
+		return false;
+	}
 }
 
 // Function for making multiple requests to a server to get file contents (http://www.phpied.com/simultaneuos-http-requests-in-php-with-curl/).

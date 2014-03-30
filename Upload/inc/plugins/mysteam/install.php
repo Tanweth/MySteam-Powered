@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
- * Author: Tanweth
  * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
  *
  * INSTALL FUNCTIONS
  * This file is used by the above plugin to handle installation and activation.
@@ -213,33 +213,6 @@ function mysteam_info()
 	);
 	$db->insert_query('settings', $setting);
 	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_login_level',
-		'title'			=> $lang->mysteam_login_level_title,
-		'description'	=> $lang->mysteam_login_level_desc,
-		'optionscode'	=> 'radio
-profile='.$lang->mysteam_login_level_profile.'
-both='.$lang->mysteam_login_level_both.'
-no='.$lang->mysteam_login_level_no,
-		'value'			=> 'both',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_login_avatar',
-		'title'			=> $lang->mysteam_login_recentlyplayed_title,
-		'description'	=> $lang->mysteam_login_recentlyplayed_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
 	// Add main settings group, then settings.
 	$group = array(
 		'gid'			=> 'NULL',
@@ -377,6 +350,35 @@ no='.$lang->mysteam_postbit_no
 		'description'	=> $lang->mysteam_prune_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '0',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	define (DISPORDER_LEVEL, $disporder);
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_level',
+		'title'			=> $lang->mysteam_level_title,
+		'description'	=> $lang->mysteam_level_desc,
+		'optionscode'	=> 'radio
+profile='.$lang->mysteam_level_profile.'
+both='.$lang->mysteam_level_both.'
+no='.$lang->mysteam_level_no,
+		'value'			=> 'both',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	define (DISPORDER_RECENTLY_PLAYED, $disporder);
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_recently_played',
+		'title'			=> $lang->mysteam_recently_played_title,
+		'description'	=> $lang->mysteam_recently_played_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
 		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);

@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: MySteam Powered
- * Author: Tanweth
  * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
  *
  * Uses the Steam Web API to obtain the current Steam status of forum users (with associated Steam IDs). It also provides User CP and Mod CP forms for obtaining a user's Steam ID.
  */
@@ -19,7 +19,18 @@ if(defined("IN_ADMINCP"))
 }
 else
 {
-	require_once MYBB_ROOT . "inc/plugins/mysteam/functions.php";
+	if ($mybb->settings['mysteam_login_enable'])
+	{
+		require_once MYBB_ROOT . "inc/plugins/mysteam/functions_login.php";
+	}
+	if ($mybb->settings['mysteam_status_enable'])
+	{
+		require_once MYBB_ROOT . "inc/plugins/mysteam/functions_status.php";
+	}
+	if ($mybb->settings['mysteam_other_enable'])
+	{
+		require_once MYBB_ROOT . "inc/plugins/mysteam/functions_other.php";
+	}
 }
 
 /*
@@ -34,13 +45,14 @@ function mysteam_templatelist()
 	
 	if(isset($templatelist))
 	{
+		if($mybb->settings['mysteam_list_enable'])
+		{
+			$templatelist .= ',mysteam_list,mysteam_list_user';
+		}
+	
 		if(THIS_SCRIPT == 'showthread.php')
 		{
 			$templatelist .= ',mysteam_postbit,mysteam_profile';
-		}
-		if(THIS_SCRIPT == 'index.php' || THIS_SCRIPT == 'portal.php')
-		{
-			$templatelist .= ',mysteam_list,mysteam_list_user';
 		}
 		if(THIS_SCRIPT == 'member.php')
 		{
@@ -116,8 +128,8 @@ function mysteam_verify_login()
 		$openid->validate();
 		
 		// Parse the URL returned by Steam Community to obtain the user's Steam ID.
-		$claimed_id = parse_url($openid->identity);
-		$steamid = substr($claimed_id['path'], 10);
+		$claimed_id = explode('/', $openid->identity);
+		$steamid = end($claimed_id);
 		
 		
 	}

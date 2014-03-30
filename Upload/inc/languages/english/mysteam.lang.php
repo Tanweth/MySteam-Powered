@@ -1,9 +1,10 @@
 <?php
-/* Plug-in Name: MySteam Powered
- * Author: Tanweth
+/* Plugin Name: MySteam Powered
  * License: MIT (http://opensource.org/licenses/MIT)
+ * Copyright © 2014 Aryndel Lamb-Marsh (aka Tanweth)
  *
- * Uses the Steam Web API to obtain the current Steam status of forum users (with associated Steam IDs). It also provides User CP and Mod CP forms for obtaining a user's Steam ID.
+ * ENGLISH LANGUAGE FILE
+ * Provides English language text for use with the above plugin.
  */
 
 // Title and description for the plugin
@@ -29,22 +30,40 @@ $l['mysteam_list_group_desc'] = "Configure the built-in (non-Advanced Sidebox) S
 $l['mysteam_template_group'] = "MySteam Powered";
 
 // Main settings
-$l['mysteam_list_enable_title'] = "Enable Login with Steam Functionality?";
-$l['mysteam_list_enable_desc'] = "If yes, users will be able to log in using their Steam account rather than registering normally.";
-$l['mysteam_list_enable_title'] = "Enable non-Advanced Sidebox Status List?";
-$l['mysteam_list_enable_desc'] = "If yes, a status list like the one in the Advanced Sidebox module will be displayed on the Index and/or Portal pages. It can be used with the ASB module, though it will repeat functionality if used on the same page.";
-$l['mysteam_list_settings'] = "List Settings";
 $l['mysteam_apikey_title'] = "Steam Web API Key";
 $l['mysteam_apikey_desc'] = "Enter the Steam Web API key for your website (obtainable <a href=\"http://steamcommunity.com/dev/apikey\">here</a>).";
-$l['mysteam_limitbygroup_title'] = "Limit Usergroups Displayed?";
-$l['mysteam_limitbygroup_desc'] = "Enter the gid of each group you want displayed, separated by commas. The gid can be found in the manage URL for the group in the Admin CP (e.g. /index.php?module=user-groups&action=edit&gid=<strong>123</strong>). Changes take effect on the next cache refresh.";
-$l['mysteam_cache_title'] = "Cache Lifespan";
-$l['mysteam_cache_desc'] = "Specify how long (in minutes) the cache should be used before refreshing it. Reducing this increases the recency of the Steam info at the cost of increased server load. 0 disables the cache.";
-$l['mysteam_displayname_title'] = "Displayed Name";
-$l['mysteam_displayname_desc'] = "Choose which name to display for users. Both displays the forum name beside the Steam name, but only if the names are not comparable.";
-$l['mysteam_displayname_steam'] = "Display Steam profile name";
-$l['mysteam_displayname_forum'] = "Display forum username";
-$l['mysteam_displayname_both'] = "Display both Steam profile name and forum username";
+$l['mysteam_login_enable_title'] = "Enable Login with Steam Functionality?";
+$l['mysteam_login_enable_desc'] = "If yes, users will be able to log in using their Steam accounts.";
+$l['mysteam_login_settings'] = "Steam Login Settings";
+$l['mysteam_status_enable_title'] = "Display Steam Status?";
+$l['mysteam_status_enable_desc'] = "If yes, the current Steam status (online, in-game, etc.) of users will be shown.";
+$l['mysteam_status_settings'] = "Steam Status Settings";
+$l['mysteam_other_enable_title'] = "Display Other Steam Info?";
+$l['mysteam_other_enable_desc'] = "If yes, Steam info not related to the current Steam status of the user will be displayed.";
+$l['mysteam_other_settings'] = "Other Steam Info Settings";
+$l['mysteam_limitbygroup_title'] = "Limit Allowed Usergroups?";
+$l['mysteam_limitbygroup_desc'] = "Enter the gid of each group you want to be able to take advantage of Steam integration features, separated by commas. The gid can be found in the manage URL for the group in the Admin CP (e.g. /index.php?module=user-groups&action=edit&gid=<strong>123</strong>). Changes take effect on the next cache refresh.";
+$l['mysteam_infrequent_cache_title'] = "Main Cache Lifespan";
+$l['mysteam_infrequent_cache_desc'] = "Specify how long (in hours) the cache for more static Steam info should be used before refreshing it. Reducing this increases the recency of the Steam info at the cost of increased server load. The minimum cache lifespan is 1 hour.";
+$l['mysteam_usercp_title'] = "Enable User CP Form?";
+$l['mysteam_usercp_desc'] = "If yes, users will be able to use a User CP form to link or unlink Steam from their forum account (if they are in an allowed usergroup).";
+$l['mysteam_modcp_title'] = "Enable Moderator CP Form?";
+$l['mysteam_modcp_desc'] = "If yes, moderators will be able to use a Moderator CP form to convert users' forum accounts into Steam-linked accounts.";
+
+// Settings for Steam login
+$l['mysteam_login_register_title'] = "Allow New Registrations through Steam Login?";
+$l['mysteam_login_register_desc'] = "If yes, guests will be able to register new accounts by signing in through Steam instead of going through normal registration.";
+$l['mysteam_login_username_title'] = "Sync Forum Username with Steam?";
+$l['mysteam_login_username_desc'] = "If yes, users with Steam-linked accounts will be able to automatically sync their forum username with their Steam name.";
+$l['mysteam_login_avatar_title'] = "Sync Forum Avatar with Steam?";
+$l['mysteam_login_avatar_desc'] = "If yes, users with Steam-linked accounts will be able to automatically sync their forum avatar with their Steam avatar.";
+
+// General Steam status settings
+$l['mysteam_cache_title'] = "Status Info Cache Lifespan";
+$l['mysteam_cache_desc'] = "Specify how long (in minutes) the cache of Steam status info should be used before refreshing it. Reducing this increases the recency of the Steam info at the cost of increased server load. 0 disables the cache.";
+$l['mysteam_list_enable_title'] = "Enable Non-Advanced Sidebox Status List?";
+$l['mysteam_list_enable_desc'] = "If yes, and display of Steam status is enabled above, a status list like the one in the Advanced Sidebox module will be displayed on the Index and/or Portal pages. It can be used with the ASB module, though it will repeat functionality if used on the same page.";
+$l['mysteam_list_settings'] = "List Settings";
 $l['mysteam_profile_title'] = "Display on Profile?";
 $l['mysteam_profile_desc'] = "If yes, the current Steam status of the user and a Steam contact field will appear on the profile page.";
 $l['mysteam_postbit_title'] = "Display on Post Bit?";
@@ -54,31 +73,19 @@ $l['mysteam_postbit_text'] = "Yes. Display the status as text.";
 $l['mysteam_postbit_no'] = "No";
 $l['mysteam_hover_title'] = "Display Status on Hover?";
 $l['mysteam_hover_desc'] = "If yes, the current plain text status of the poster will be displayed on mouse hover over the status image. If no, the text status will be displayed at all times. Only applies if the post bit status display style is set to image (see above).";
+$l['mysteam_displayname_title'] = "Displayed Name on Status List";
+$l['mysteam_displayname_desc'] = "Choose which name to display for users on the status list. Both displays the forum name beside the Steam name, but only if the names are not comparable.";
+$l['mysteam_displayname_steam'] = "Display Steam profile name";
+$l['mysteam_displayname_forum'] = "Display forum username";
+$l['mysteam_displayname_both'] = "Display both Steam profile name and forum username";
 $l['mysteam_prune_title'] = "Prune Inactive Users from List";
-$l['mysteam_prune_desc'] = "Specify after how many days since the last visit that a user should no longer appear on the list. 0 disables pruning. Changes take effect on the next cache refresh.";
-$l['mysteam_usercp_title'] = "Enable User CP Form?";
-$l['mysteam_usercp_desc'] = "If yes, users will be able to use a User CP form to add their own Steam profile info (if they are in an allowed usergroup).";
-$l['mysteam_modcp_title'] = "Enable Mod CP Form?";
-$l['mysteam_modcp_desc'] = "If yes, moderators will be able to use a Moderator CP form to add the Steam profile info of other users.";
+$l['mysteam_prune_desc'] = "Specify after how many days since the last visit that a user status info should no longer appear. 0 disables pruning. Changes take effect on the next cache refresh.";
 
 // Settings for both ASB and non-ASB status lists
 $l['mysteam_list_width_title'] = "Width of Each Status Entry";
 $l['mysteam_list_width_desc'] = "Set the width (in pixels) of each entry in the status list. This setting also controls how many rows and columns there are (lower widths result in more columns).";
 $l['mysteam_list_number_title'] = "Maximum Number of Users to Display";
 $l['mysteam_list_number_desc'] = "Set the maximum number of users you want to be displayed. 0 disables this, so all online users will be listed. Changes take effect on the next cache refresh.";
-
-// Settings for Steam login
-$l['mysteam_login_username_title'] = "Sync Forum Username with Steam?";
-$l['mysteam_login_username_desc'] = "If yes, users with Steam-linked accounts will be able to automatically sync their forum username with their Steam name.";
-$l['mysteam_login_avatar_title'] = "Sync Forum Avatar with Steam?";
-$l['mysteam_login_avatar_desc'] = "If yes, users with Steam-linked accounts will be able to automatically sync their forum avatar with their Steam avatar.";
-$l['mysteam_login_level_title'] = "Display Steam Level?";
-$l['mysteam_login_level_desc'] = "If yes, users with Steam-linked accounts will be able to display their Steam level on their profile and post bit (if enabled below).";
-$l['mysteam_login_level_profile'] = "Yes, display the Steam level on the profile only.";
-$l['mysteam_login_level_both'] = "Yes, display the Steam level on both the profile and post bit.";
-$l['mysteam_login_level_no'] = "No, do not display the Steam level of the user.";
-$l['mysteam_login_recentlyplayed_title'] = "Display Recently Played Games?";
-$l['mysteam_login_recentlyplayed_desc'] = "If yes, users with Steam-linked accounts will be able to display a list of games that they have recently played on their profile. NB: Enabling this generates an extra (though infrequent) API call for every user with this enabled.";
 
 // Settings for ASB module only
 $l['mysteam_settings_where_title'] = "Where Are All The Settings?";
@@ -92,6 +99,15 @@ $l['mysteam_index_title'] = "Display Status List on Index?";
 $l['mysteam_index_desc'] = "If enabled, a Steam status list will be displayed on the Index page.";
 $l['mysteam_portal_title'] = "Display Status List on Portal?";
 $l['mysteam_portal_desc'] = "If enabled, a Steam status list will be displayed on the Portal page.";
+
+// Settings for other Steam info
+$l['mysteam_level_title'] = "Display Steam Level?";
+$l['mysteam_level_desc'] = "If yes, users with Steam-linked accounts will be able to display their Steam level.";
+$l['mysteam_level_profile'] = "Yes, display the Steam level on the profile only.";
+$l['mysteam_level_both'] = "Yes, display the Steam level on both the profile and post bit. NB: Enabling this generates an extra (though infrequent) API call for each applicable user.";
+$l['mysteam_level_no'] = "No, do not display the Steam level of the user.";
+$l['mysteam_recently_played_title'] = "Display Recently Played Games?";
+$l['mysteam_recently_played_desc'] = "If yes, users with Steam-linked accounts will be able to display a list of games that they have recently played on their profile. NB: Enabling this generates an extra (though infrequent) API call for each applicable user.";
 
 // Steam login
 $l['mysteam_login_redirect'] = 'You are being redirected to Steam Community to sign in to our forums through Steam.';
