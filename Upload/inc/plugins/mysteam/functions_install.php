@@ -104,6 +104,214 @@ function mysteam_info()
 	{
 		$list_enable_value = 'yes';
 	}
+	
+	// Add Steam Login settings group, then settings.
+	$group = array(
+		'gid'			=> 'NULL',
+		'title'			=> $lang->mysteam_login_group_title,
+		'name'			=> 'mysteam_login_group',
+		'description'	=> $lang->mysteam_login_group_desc,
+		'disporder'		=> '222',
+		'isdefault'		=> '0',
+	);
+	$db->insert_query('settinggroups', $group);
+	$gid = $db->insert_id();
+	$group_gid = (int) $gid;
+	$disporder = 1;
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_sync_username',
+		'title'			=> $lang->mysteam_sync_username_title,
+		'description'	=> $lang->mysteam_sync_username_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_avatar',
+		'title'			=> $lang->mysteam_sync_avatar_title,
+		'description'	=> $lang->mysteam_sync_avatar_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	// Generate link to Steam Login settings.
+	$mysteam_login_enable_desc = $lang->mysteam_login_enable_desc;
+	
+	if ($group_gid)
+	{
+		$mysteam_login_enable_desc .= ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_login_settings. '</a>)';
+	}
+	
+	// Add Steam Status settings group, then settings.
+	$group = array(
+		'gid'			=> 'NULL',
+		'title'			=> $lang->mysteam_status_group_title,
+		'name'			=> 'mysteam_status_group',
+		'description'	=> $lang->mysteam_status_group_desc,
+		'disporder'		=> '223',
+		'isdefault'		=> '0',
+	);
+	$db->insert_query('settinggroups', $group);
+	$gid = $db->insert_id();
+	$group_gid = (int) $gid;
+	$disporder = 1;
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_list_enable',
+		'title'			=> $lang->mysteam_list_enable_title,
+		'description'	=> $mysteam_list_enable_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> $list_enable_value,
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_status_cache',
+		'title'			=> $lang->mysteam_status_cache_title,
+		'description'	=> $lang->mysteam_status_cache_desc,
+		'optionscode'	=> 'text',
+		'value'			=> '10',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_profile',
+		'title'			=> $lang->mysteam_profile_title,
+		'description'	=> $lang->mysteam_profile_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_postbit',
+		'title'			=> $lang->mysteam_postbit_title,
+		'description'	=> $lang->mysteam_postbit_desc,
+		'optionscode'	=> 'radio
+img=' .$lang->mysteam_postbit_img. '
+text=' .$lang->mysteam_postbit_text. '
+no=' .$lang->mysteam_postbit_no,
+		'value'			=> 'img',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	define (DISPORDER_HOVER, $disporder);
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_hover',
+		'title'			=> $lang->mysteam_hover_title,
+		'description'	=> $lang->mysteam_hover_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_displayname',
+		'title'			=> $lang->mysteam_displayname_title,
+		'description'	=> $lang->mysteam_displayname_desc,
+		'optionscode'	=> 'radio
+steam=' .$lang->mysteam_displayname_steam. '
+forum=' .$lang->mysteam_displayname_forum. '
+both=' .$lang->mysteam_displayname_both,
+		'value'			=> 'forum',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_prune',
+		'title'			=> $lang->mysteam_prune_title,
+		'description'	=> $lang->mysteam_prune_desc,
+		'optionscode'	=> 'text',
+		'value'			=> '0',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	// Generate link to Steam Status settings.
+	$mysteam_status_enable_desc = $lang->mysteam_status_enable_desc;
+	
+	if ($group_gid)
+	{
+		$mysteam_status_enable_desc .= ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_status_settings. '</a>)';
+	}
+	
+	// Add Other Steam Info settings group, then settings.
+	$group = array(
+		'gid'			=> 'NULL',
+		'title'			=> $lang->mysteam_other_group_title,
+		'name'			=> 'mysteam_other_group',
+		'description'	=> $lang->mysteam_other_group_desc,
+		'disporder'		=> '222',
+		'isdefault'		=> '0',
+	);
+	$db->insert_query('settinggroups', $group);
+	$gid = $db->insert_id();
+	$group_gid = (int) $gid;
+	$disporder = 1;
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_level',
+		'title'			=> $lang->mysteam_level_title,
+		'description'	=> $lang->mysteam_level_desc,
+		'optionscode'	=> 'radio
+profile=' .$lang->mysteam_level_profile. '
+both=' .$lang->mysteam_level_both. '
+no=' . $lang->mysteam_level_no,
+		'value'			=> 'forum',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_recently_played',
+		'title'			=> $lang->mysteam_recently_played_title,
+		'description'	=> $lang->mysteam_recently_played_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'yes',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	// Generate link to Other Steam Info settings.
+	$mysteam_other_enable_desc = $lang->mysteam_other_enable_desc;
+	
+	if ($group_gid)
+	{
+		$mysteam_other_enable_desc .= ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_other_settings. '</a>)';
+	}
 
 	// Add non-Advanced Sidebox status list settings group, then settings.
 	$group = array(
@@ -175,44 +383,6 @@ function mysteam_info()
 		$mysteam_list_enable_desc .= ' (<a href="index.php?module=config-settings&action=change&gid=' .$group_gid. '">' .$lang->mysteam_list_settings. '</a>)';
 	}
 	
-	// Add Steam login settings group, then settings.
-	$group = array(
-		'gid'			=> 'NULL',
-		'title'			=> $lang->mysteam_login_group_title,
-		'name'			=> 'mysteam_login_group',
-		'description'	=> $lang->mysteam_login_group_desc,
-		'disporder'		=> '223',
-		'isdefault'		=> '0',
-	);
-	$db->insert_query('settinggroups', $group);
-	$gid = $db->insert_id();
-	$group_gid = (int) $gid;
-	$disporder = 1;
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_login_username',
-		'title'			=> $lang->mysteam_login_username_title,
-		'description'	=> $lang->mysteam_login_username_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_login_avatar',
-		'title'			=> $lang->mysteam_login_avatar_title,
-		'description'	=> $lang->mysteam_login_avatar_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
 	// Add main settings group, then settings.
 	$group = array(
 		'gid'			=> 'NULL',
@@ -229,35 +399,47 @@ function mysteam_info()
 	
 	$setting = array(
 		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_login_enable',
-		'title'			=> $lang->mysteam_login_enable_title,
-		'description'	=> $mysteam_list_login_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_list_enable',
-		'title'			=> $lang->mysteam_list_enable_title,
-		'description'	=> $mysteam_list_enable_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> $list_enable_value,
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
 		'name'			=> 'mysteam_apikey',
 		'title'			=> $lang->mysteam_apikey_title,
 		'description'	=> $lang->mysteam_apikey_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_login_enable',
+		'title'			=> $lang->mysteam_login_enable_title,
+		'description'	=> $mysteam_login_enable_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'no',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_status_enable',
+		'title'			=> $lang->mysteam_status_enable_title,
+		'description'	=> $mysteam_status_enable_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'no',
+		'disporder'		=> $disporder++,
+		'gid'			=> $group_gid,
+	);
+	$db->insert_query('settings', $setting);
+	
+	$setting = array(
+		'sid'			=> 'NULL',
+		'name'			=> 'mysteam_other_enable',
+		'title'			=> $lang->mysteam_other_enable_title,
+		'description'	=> $mysteam_other_enable_desc,
+		'optionscode'	=> 'yesno',
+		'value'			=> 'no',
 		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
@@ -277,108 +459,11 @@ function mysteam_info()
 	
 	$setting = array(
 		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_cache',
-		'title'			=> $lang->mysteam_cache_title,
-		'description'	=> $lang->mysteam_cache_desc,
+		'name'			=> 'mysteam_main_cache',
+		'title'			=> $lang->mysteam_main_cache_title,
+		'description'	=> $lang->mysteam_main_cache_desc,
 		'optionscode'	=> 'text',
 		'value'			=> '10',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_displayname',
-		'title'			=> $lang->mysteam_displayname_title,
-		'description'	=> $lang->mysteam_displayname_desc,
-		'optionscode'	=> 'radio
-steam='.$lang->mysteam_displayname_steam.'
-forum='.$lang->mysteam_displayname_forum.'
-both='.$lang->mysteam_displayname_both,
-		'value'			=> 'forum',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_profile',
-		'title'			=> $lang->mysteam_profile_title,
-		'description'	=> $lang->mysteam_profile_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_postbit',
-		'title'			=> $lang->mysteam_postbit_title,
-		'description'	=> $lang->mysteam_postbit_desc,
-		'optionscode'	=> 'radio
-img='.$lang->mysteam_postbit_img.'
-text='.$lang->mysteam_postbit_text.'
-no='.$lang->mysteam_postbit_no
-							,
-		'value'			=> 'img',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	define (DISPORDER_HOVER, $disporder);
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_hover',
-		'title'			=> $lang->mysteam_hover_title,
-		'description'	=> $lang->mysteam_hover_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_prune',
-		'title'			=> $lang->mysteam_prune_title,
-		'description'	=> $lang->mysteam_prune_desc,
-		'optionscode'	=> 'text',
-		'value'			=> '0',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	define (DISPORDER_LEVEL, $disporder);
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_level',
-		'title'			=> $lang->mysteam_level_title,
-		'description'	=> $lang->mysteam_level_desc,
-		'optionscode'	=> 'radio
-profile='.$lang->mysteam_level_profile.'
-both='.$lang->mysteam_level_both.'
-no='.$lang->mysteam_level_no,
-		'value'			=> 'both',
-		'disporder'		=> $disporder++,
-		'gid'			=> $group_gid,
-	);
-	$db->insert_query('settings', $setting);
-	
-	define (DISPORDER_RECENTLY_PLAYED, $disporder);
-	$setting = array(
-		'sid'			=> 'NULL',
-		'name'			=> 'mysteam_recently_played',
-		'title'			=> $lang->mysteam_recently_played_title,
-		'description'	=> $lang->mysteam_recently_played_desc,
-		'optionscode'	=> 'yesno',
-		'value'			=> 'yes',
 		'disporder'		=> $disporder++,
 		'gid'			=> $group_gid,
 	);
@@ -548,6 +633,11 @@ function mysteam_upgrade()
 		$sid = (int) $db->fetch_field($query, 'sid');
 		$db->update_query('themestylesheets', $stylesheet_array, "sid='".$sid."'");
 	}
+	
+	/* Version 2.0 Upgrade Script:
+	 * Regenerate settings, preserving existing values.
+	 * Delete previous cache and generate new ones.
+	 */
 	
 	return $version;
 }
