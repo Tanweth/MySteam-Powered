@@ -69,7 +69,7 @@ function mysteam_info()
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'		=> 'http://kerfufflealliance.com',
-		'version'		=> '1.1.1',
+		'version'		=> '1.1.2',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
 		'compatibility' => '16*'
 	);
