@@ -93,7 +93,7 @@ $l['mysteam_complete_list'] = "Complete List";
 
 // Member profile page
 $l['mysteam_status'] = "Steam:";
-$l['mysteam_name'] = "Steam Name:";
+$l['mysteam_name'] = "Steam Name: ";
 
 // Steam ID form
 $l['mysteam_integration'] = "Steam Integration";
@@ -107,22 +107,22 @@ $l['mysteam_decouple_body'] = "Decouple Steam:";
 
 // Steam ID form (User CP)
 $l['mysteam_usercp_intro'] = "This forum includes the ability to display your current Steam status (whether online/offline, and if you're in a game), and display a Steam contact field for you on your profile.";
-$l['mysteam_usercp_instruct'] = "To activate this feature, enter the URL to your Steam profile in the box below, then submit. It will automatically obtain your Steam ID. You can use the links below to search for your Steam profile.";
+$l['mysteam_usercp_instruct'] = "To activate this feature, enter the URL to your Steam profile, the name on your Steam vanity URL if set (steamcommunity.com/id/[name]), or your 64-bit Steam ID in the box below, then submit. You can use the links below to search for your Steam profile.";
 $l['mysteam_usercp_note'] = "NB: For your status to be displayed, your Steam profile must NOT be set to private!";
 $l['mysteam_usercp_decouple'] = "If you wish to decouple your Steam ID from your MyBB account, hit the appropriate button below.";
 
 // Steam ID form (Moderator CP)
 $l['mysteam_modcp_intro'] = "This forum includes the ability to display members' current Steam status (whether online/offline, and if in a game), and display a Steam contact field on their profiles.";
-$l['mysteam_modcp_instruct'] = "To activate this feature for this member, enter the URL to the member's Steam profile in the box below, then submit. It will automatically obtain the Steam ID. You can use the links below to search for the member's Steam profile.";
+$l['mysteam_modcp_instruct'] = "To activate this feature for this member, enter the URL to the member's Steam profile, the name on the member's Steam vanity url if set (steamcommunity.com/id/[name]), or the member's 64-bit Steam ID in the box below, then submit. You can use the links below to search for the member's Steam profile.";
 $l['mysteam_modcp_note'] = "NB: For the status to be displayed, the member's Steam profile must NOT be set to private!";
 $l['mysteam_modcp_back'] = "Back to Moderator CP";
 $l['mysteam_modcp_decouple'] = "If you wish to decouple the Steam ID from this user's MyBB account, hit this button:";
 
 // Steam ID form (submit)
-$l['mysteam_submit_invalid'] = "The URL you entered did not return a valid response. The URL may be incorrect, or Steam Community may currently be unavailable.";
+$l['mysteam_submit_invalid'] = "The URL or ID you entered did not return a valid response. It may be incorrect, or Steam Community may currently be unavailable.";
 $l['mysteam_submit_same'] = "The Steam ID associated with the profile URL you entered is identical to the Steam ID currently associated with the following user: ";
-$l['mysteam_steamname'] = "Steam Profile Name: ";
 $l['mysteam_steamid'] = "Steam ID: ";
+$l['mysteam_vanityurl'] = "Vanity URL Name: ";
 
 // Steam ID form (User CP submit)
 $l['mysteam_submit_success'] = "Success! Your Steam ID has been integrated. The following information is associated with the profile you submitted:";

@@ -5,7 +5,7 @@ MySteam Powered
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 1.1.2
+* Version: 1.2
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
@@ -78,10 +78,11 @@ You can also ask for support (bug-related or not) in the release thread: http://
 
 ## Changelog
 
-* 1.1.2
+* 1.2
+	* Status updates for all users are now obtained in a single Steam API call, rather than an API call for each user (experimental).
+	* Changed the method for Steam Integration on the User CP and Moderator CP. The Steam Community Data API is no longer used at all, and the form now accepts a directly entered 64-bit Steam ID or vanity URL name.
 	* Fixed an undefined function error on post bit and profile pages.
 	* Fixed an undefined function error if the plugin is disabled but the ASB module is still in place. Now the ASB module will just disappear or display its stock error instead.
-	* Status updates for all users are now obtained in a single Steam API call, rather than an API call for each user (experimental).
 
 * 1.1.1
 	* Special characters will now show up in Steam names on the Steam status list.
