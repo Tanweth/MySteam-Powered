@@ -5,7 +5,7 @@ MySteam Powered
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 1.2
+* Version: 1.2.1
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
@@ -77,6 +77,10 @@ If you notice a bug, you should report it in the Issues sections of the GitHub p
 You can also ask for support (bug-related or not) in the release thread: http://community.mybb.com/thread-151564.html
 
 ## Changelog
+
+* 1.2.1
+	* Reintroduced filtering of special characters from Steam usernames and game names, since some characters were preventing the cache from being generated. The filtering is more relaxed than in v1.1 (i.e. it will allow more special characters).
+	* Various code optimizations.
 
 * 1.2
 	* Status updates for all users are now obtained in a single Steam API call, rather than an API call for each user (experimental).
