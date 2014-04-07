@@ -171,17 +171,21 @@ function mysteam_build_cache()
 		return false;
 	}
 	
-	// Generate list of URLs for contacting Steam's servers.
+	// Generate list of Steam IDs for contacting Steam's servers, and create array of forum user info with Steam ID as key, so that we can associate forum info with the Steam responses.
 	foreach ($users as $user)
 	{
-		$data[] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
+		$steamids_array[] = $user['steamid'];
+		$users_sorted[$user['steamid']] = $user;
 	}
+	
+	$steamids = implode(',', $steamids_array);
+	$data = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $steamids;
 
 	// Fetch data from Steam's servers.
-	$responses = multiRequest($data);	
+	$response = multiRequest($data);	
 	
 	// Check that there was a response (i.e. ensure Steam's servers aren't down).
-	if (strpos($responses[0], 'response') === FALSE)
+	if (!strpos($response[0], 'steamid'))
 	{	
 		return false;
 	}
@@ -189,37 +193,138 @@ function mysteam_build_cache()
 	// Cache time of cache update.
 	$steam_update['time'] = TIME_NOW;
 	
+	// Decode response (returned in JSON), then create array of important fields.
+	$decoded = json_decode($response[0]);
+	
 	// Loop through results from Steam and associate them with the users from database query.
-	for ($n = 0; $n <= count($users); $n++)
-	{
-		$user = $users[$n];
-		$response = $responses[$n];
-		
-		// Occasionally Steam's servers return a response with no values. If so, don't update info for the current user.
-		if (strpos($response, 'personastate') === FALSE)
-		{
-			continue;
-		}
-
-		// Decode response (returned in JSON), then create array of important fields.
-		$decoded = json_decode($response);
-
-		$steam_update['users'][$user['uid']] = array (
-			'username' => $user['username'],
-			'steamname' => htmlspecialchars_uni($decoded->response->players[0]->personaname),
-			'steamurl' => $db->escape_string($decoded->response->players[0]->profileurl),
-			'steamavatar' => $db->escape_string($decoded->response->players[0]->avatar),
-			'steamstatus' => $db->escape_string($decoded->response->players[0]->personastate),
-			'steamgame' => htmlspecialchars_uni($decoded->response->players[0]->gameextrainfo)
+	foreach ($decoded->response->players as $player)
+	{			
+		$steam_update['users'][$users_sorted[$player->steamid]['uid']] = array (
+			'username'	=> $users_sorted[$player->steamid]['username'],
+			'steamname'	=> $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->personaname)),
+			'steamurl'	=> $db->escape_string($player->profileurl),
+			'steamavatar'	=> $db->escape_string($player->avatar),
+			'steamstatus'	=> $db->escape_string($player->personastate),
+			'steamgame'	=> $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->gameextrainfo))
 		);	
 	}
-
 	return $steam_update;
+}
+
+/*
+ * mysteam_status()
+ * 
+ * Determines display style and status text for the supplied user based on their current status info.
+ * 
+ * @param - $steam - (array) the cached Steam user info
+ */ 
+function mysteam_status(&$steam)
+{
+	global $lang, $mybb, $templates, $post, $steam_status;
+	
+	// Determine user's current status and appropriate visual style.
+	if ($steam['steamstatus'] == '0')
+	{
+		$steam_state = $lang->mysteam_offline;
+		$avatar_class = 'steam_avatar_offline';
+		$color_class = 'steam_offline';
+	}
+	elseif (!empty($steam['steamgame']))
+	{
+		$steam_state = $steam['steamgame'];
+		$avatar_class = 'steam_avatar_in-game';
+		$color_class = 'steam_in-game';
+	}
+	elseif ($steam['steamstatus'] == '1')
+	{
+		$steam_state = $lang->mysteam_online;
+		$avatar_class = 'steam_avatar_online';
+		$color_class = 'steam_online';
+	}
+	elseif ($steam['steamstatus'] == '3')
+	{
+		$steam_state = $lang->mysteam_away;
+		$avatar_class = 'steam_avatar_online';
+		$color_class = 'steam_online';
+	}
+	elseif ($steam['steamstatus'] == '4')
+	{
+		$steam_state = $lang->mysteam_snooze;
+		$avatar_class = 'steam_avatar_online';
+		$color_class = 'steam_online';
+	}
+	elseif ($steam['steamstatus'] == '2')
+	{
+		$steam_state = $lang->mysteam_busy;
+		$avatar_class = 'steam_avatar_online';
+		$color_class = 'steam_online';
+	}
+	elseif ($steam['steamstatus'] == '5')
+	{
+		$steam_state = $lang->mysteam_looking_to_trade;
+		$avatar_class = 'steam_avatar_online';
+		$color_class = 'steam_online';
+	}
+	elseif ($steam['steamstatus'] == '6')
+	{
+		$steam_state = $lang->mysteam_looking_to_play;
+		$avatar_class = 'steam_avatar_online';
+		$color_class = 'steam_online';
+	}
+	
+	// Some things to check if running this on postbit.
+	if ($post)
+	{
+		// If set to display status as an image.
+		if ($mybb->settings['mysteam_postbit'] == 'img')
+		{
+			// Special display style for classic post bit.
+			if ($mybb->user['classicpostbit'])
+			{
+				if ($mybb->settings['mysteam_hover'])
+				{
+					$steam_icon_status = 'steam_icon_status_classic';
+				}
+				else
+				{
+					$steam_icon_status = 'steam_icon_status_classic_nohover';
+				}
+			}
+			else
+			{
+				if ($mybb->settings['mysteam_hover'])
+				{
+					$steam_icon_status = 'steam_icon_status';
+				}
+				else
+				{
+					$steam_icon_status = 'steam_icon_status_nohover';
+				}		
+			}
+			eval("\$steam['steam_status_img'] = \"".$templates->get("mysteam_postbit")."\";");
+		}
+		// If set to display status as text
+		elseif ($mybb->settings['mysteam_postbit'] == 'text')
+		{
+			eval("\$steam['steam_status'] = \"".$templates->get("mysteam_profile")."\";");
+		}
+		// If set not to display
+		else
+		{
+			// Display nothing.
+		}
+	}
+	else
+	{
+		eval("\$steam_status = \"".$templates->get("mysteam_profile")."\";");
+	}
 }
 
 // Function for making multiple requests to a server to get file contents (http://www.phpied.com/simultaneuos-http-requests-in-php-with-curl/).
 function multiRequest($data, $options = array()) 
 {
+	$data = (array) $data;
+
 	// array of curl handles
 	$curly = array();
 	// data to be returned

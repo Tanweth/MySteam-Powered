@@ -13,13 +13,13 @@ if(!defined('IN_MYBB'))
 }
 
 // Load installation functions if in Admin CP.
-if(defined("IN_ADMINCP"))
+if(defined('IN_ADMINCP'))
 {
-   require_once MYBB_ROOT . "inc/plugins/mysteam/install.php";
+   require_once MYBB_ROOT . 'inc/plugins/mysteam/install.php';
 }
 else
 {
-	require_once MYBB_ROOT . "inc/plugins/mysteam/functions.php";
+	require_once MYBB_ROOT . 'inc/plugins/mysteam/functions.php';
 }
 
 /*
@@ -366,38 +366,87 @@ function mysteam_usercp()
 			$submit_display = '';
 			$uid = $db->escape_string($mybb->input['uid']);
 			
-			// If user has attempted to submit a Steam profile.
+			// If user has attempted to submit a Steam profile . . .
 			if ($mybb->input['submit'])
-			{
-				// Add http:// to the link if the user was too lazy to do so.
-				if (strpos($mybb->input['steamprofile'], 'http://') === FALSE)
+			{	
+				// If user directly entered a Steam ID . . .
+				if (is_numeric($mybb->input['steamprofile']) && (strlen($mybb->input['steamprofile']) === 17))
 				{
-					$steamprofile = 'http://' . $mybb->input['steamprofile'];
+					$steamid = $db->escape_string($mybb->input['steamprofile']);
+					
+					// Ensure the Steam ID is valid.
+					$data = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $steamid;
+					$response = multiRequest($data);
+					
+					if (!strpos($response[0], 'steamid'))
+					{
+						unset($steamid);
+					}
+					else
+					{
+						$decoded = json_decode($response[0]);
+						$steamname = $decoded->response->players[0]->personaname;
+					}
 				}
-				else
+				// If user directly entered a vanity URL name . . .
+				elseif (!strpos($mybb->input['steamprofile'], '/'))
 				{
-					$steamprofile = $mybb->input['steamprofile'];
+					$vanity_url = $db->escape_string($mybb->input['steamprofile']);
+				
+					$data = 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' .$mybb->settings['mysteam_apikey']. '&vanityurl=' . $vanity_url;
+					$response = multiRequest($data);
+					$decoded = json_decode($response[0]);
+					
+					if ($decoded->response->success == 1)
+					{
+						$steamid = $db->escape_string($decoded->response->steamid);
+					}
+				}
+				// If user entered a non-vanity profile URL . . .
+				elseif (strpos($mybb->input['steamprofile'], '/profiles/'))
+				{	
+					$trimmed_url = rtrim($mybb->input['steamprofile'], '/');
+					$parsed_url = explode('/', $trimmed_url);
+					$steamid = end($parsed_url);
+					
+					$data = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $steamid;
+					$response = multiRequest($data);
+					
+					if (!strpos($response[0], 'steamid'))
+					{
+						unset($steamid);
+					}
+					else
+					{
+						$decoded = json_decode($response[0]);
+						$steamname = $decoded->response->players[0]->personaname;
+					}
+				}
+				// If user entered a vanity profile URL . . .
+				elseif (strpos($mybb->input['steamprofile'], '/id/'))
+				{		
+					$trimmed_url = rtrim($mybb->input['steamprofile'], '/');
+					$parsed_url = explode('/', $trimmed_url);
+					$vanity_url = end($parsed_url);
+					
+					$data = 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' .$mybb->settings['mysteam_apikey']. '&vanityurl=' . $vanity_url;
+					$response = multiRequest($data);
+					$decoded = json_decode($response[0]);
+					
+					if ($decoded->response->success == 1)
+					{
+						$steamid = $db->escape_string($decoded->response->steamid);
+					}
 				}
 				
-				// Generate XML URL and load it.
-				$xml_url = $steamprofile . '?xml=1';
-				$xml = @simplexml_load_file($xml_url);
-
-				// Don't run if URL isn't proper XML file, and display error.
-				if (!$xml->steamID64)
+				// If we have a valid Steam ID . . .
+				if ($steamid)
 				{
-					$submit_message = '
-						<p><em>' .$lang->please_correct_errors. '</em></p>
-						<p>' .$lang->mysteam_submit_invalid. '</p>';
-				}
-				else
-				{
-					$steamid = $db->escape_string($xml->steamID64);
 					$query = $db->simple_select("users", "username", "steamid='".$steamid."'");
 					$username_same = $db->fetch_field($query, 'username');
 					
 					// Don't run if Steam ID matches another user's current ID, and display error.
-					if ($db->num_rows($query) > 0)
+					if ($db->num_rows($query))
 					{
 						$submit_message = '
 							<p><em>' .$lang->please_correct_errors. '</em></p>
@@ -406,22 +455,36 @@ function mysteam_usercp()
 					// Otherwise, write to the database and display success!
 					else
 					{
-						$steamid = $db->escape_string($xml->steamID64);
 						$db->update_query("users", array('steamid' => $steamid), "uid='".$uid."'");
+						
+						if ($vanity_url)
+						{
+							$success_third_line = '<br />
+							<strong>' .$lang->mysteam_vanityurl. '</strong>' .$vanity_url. '</p>';
+						}
+						else
+						{
+							$success_third_line = '<br />
+							<strong>' .$lang->mysteam_name. '</strong>' .$steamname. '</p>';
+						}
 						
 						$submit_message = 
 							'<p><strong>' .$lang->mysteam_submit_success. '</strong></p>
-							<p><strong>' .$lang->mysteam_steamname. '</strong>' .$xml->steamID. '</p>
-							<p><strong>' .$lang->mysteam_steamid. '</strong>' .$xml->steamID64. '</p>';
+							<p><strong>' .$lang->mysteam_steamid. '</strong>' .$steamid.
+							$success_third_line;
 					}
 				}
+				// If we don't have a valid Steam ID, display an error.
+				else
+				{
+					$submit_message = 
+						'<p><em>' .$lang->please_correct_errors. '</em></p>
+						<p>' .$lang->mysteam_submit_invalid. '</p>';
+				}
 			}
-			// If user has requested to decouple.
+			// If user has requested to decouple . . .
 			elseif ($mybb->input['decouple'])
 			{
-				$submit_display = '';
-				$uid = $db->escape_string($mybb->input['uid']);
-			
 				$db->update_query("users", array('steamid' => ''), "uid='".$uid."'");
 				$submit_message = $lang->mysteam_decouple_success;
 			}

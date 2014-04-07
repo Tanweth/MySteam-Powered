@@ -1,15 +1,11 @@
-MySteam Powered -- TESTING
+MySteam Powered
 ========
-
-### This is the testing branch of MySteam Powered. Use with caution!
-
-All commits to the testing branch have undergone basic testing and should be fully functional. However, they have not undergone extensive testing, so they are more likely to cause issues or not work as intended. Installing this branch on a live forum is NOT recommended!
 
 <p align="center">
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 2.0
+* Version: 1.2.1
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
@@ -81,6 +77,21 @@ If you notice a bug, you should report it in the Issues sections of the GitHub p
 You can also ask for support (bug-related or not) in the release thread: http://community.mybb.com/thread-151564.html
 
 ## Changelog
+
+* 1.2.1
+	* Reintroduced filtering of special characters from Steam usernames and game names, since some characters were preventing the cache from being generated. The filtering is more relaxed than in v1.1 (i.e. it will allow more special characters).
+	* Various code optimizations.
+
+* 1.2
+	* Status updates for all users are now obtained in a single Steam API call, rather than an API call for each user (experimental).
+	* Changed the method for Steam Integration on the User CP and Moderator CP. The Steam Community Data API is no longer used at all, and the form now accepts a directly entered 64-bit Steam ID or vanity URL name.
+	* Fixed an undefined function error on post bit and profile pages.
+	* Fixed an undefined function error if the plugin is disabled but the ASB module is still in place. Now the ASB module will just disappear or display its stock error instead.
+
+* 1.1.1
+	* Special characters will now show up in Steam names on the Steam status list.
+	* The non-ASB status list templates are now cached on all pages, rather than just the Index and Portal pages (since the list can now be displayed on nearly any forum page).
+	* Split many plugin functions into separate files from main plugin file to improve code readability.
 
 * 1.1
 	* Globalized the $mysteamlist variable. Now if you are using the non-ASB status list, you can add the Steam status list to any page of your forums by placing "{$mysteamlist}" in any template (with some exceptions, including the header template). By default it still only displays on Index and Portal, and display on those pages can still be enabled/disabled in settings.
