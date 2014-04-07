@@ -207,9 +207,14 @@ function asb_mysteamlist_build_list($settings, $width)
 {	
 	global $mybb, $lang, $templates;
 	
-	// Read the cache, or refresh it if too old.
-	$steam = mysteam_check_cache();
+	// Make sure the main plugin's functions are available (may not be if it's disabled).
+	if (function_exists(mysteam_check_cache))
+	{
+		// Read the cache, or refresh it if too old.
+		$steam = mysteam_check_cache();
+	}
 	
+	// If no users to display, show error.
 	if (!$steam['users'])
 	{
 		return false;

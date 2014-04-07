@@ -171,17 +171,21 @@ function mysteam_build_cache()
 		return false;
 	}
 	
-	// Generate list of URLs for contacting Steam's servers.
+	// Generate list of Steam IDs for contacting Steam's servers, and create array of forum user info with Steam ID as key, so that we can associate forum info with the Steam responses.
 	foreach ($users as $user)
 	{
-		$data[] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
+		$steamids_array[] = $user['steamid'];
+		$users_sorted[$user['steamid']] = $user;
 	}
+	
+	$steamids = implode(',', $steamids_array);
+	$data = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $steamids;
 
 	// Fetch data from Steam's servers.
-	$responses = multiRequest($data);	
+	$response = multiRequest($data);	
 	
-	// Check that there was a response (i.e. ensure Steam's servers aren't down).
-	if (strpos($responses[0], 'response') === FALSE)
+	// Check that there was a valid response (i.e. ensure Steam's servers aren't down).
+	if (!strpos($response[0], 'steamid'))
 	{	
 		return false;
 	}
@@ -189,31 +193,22 @@ function mysteam_build_cache()
 	// Cache time of cache update.
 	$steam_update['time'] = TIME_NOW;
 	
+	// Decode response (returned in JSON).
+	$decoded = json_decode($response[0]);
+	
 	// Loop through results from Steam and associate them with the users from database query.
-	for ($n = 0; $n <= count($users); $n++)
-	{
-		$user = $users[$n];
-		$response = $responses[$n];
-		
-		// Occasionally Steam's servers return a response with no values. If so, don't update info for the current user.
-		if (strpos($response, 'personastate') === FALSE)
-		{
-			continue;
-		}
-
-		// Decode response (returned in JSON), then create array of important fields.
-		$decoded = json_decode($response);
-
-		$steam_update['users'][$user['uid']] = array (
-			'username'				=> $user['username'],
-			'steamname'				=> htmlspecialchars_uni($decoded->response->players[0]->personaname)),
-			'steamurl'				=> $db->escape_string($decoded->response->players[0]->profileurl),
-			'steamavatar'			=> $db->escape_string($decoded->response->players[0]->avatar),
-			'steamavatar_medium'	=> $db->escape_string($decoded->response->players[0]->avatarmedium),
-			'steamavatar_full'		=> $db->escape_string($decoded->response->players[0]->avatarfull),
-			'steamstatus'			=> $db->escape_string($decoded->response->players[0]->personastate),
-			'steamgame'				=> htmlspecialchars_uni($decoded->response->players[0]->gameextrainfo))
-		);
+	foreach ($decoded->response->players as $player)
+	{			
+		$steam_update['users'][$users_sorted[$player->steamid]['uid']] = array (
+			'username'				=> $users_sorted[$player->steamid]['username'],
+			'steamname'				=> $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->personaname)),
+			'steamurl'				=> $db->escape_string($player->profileurl),
+			'steamavatar'			=> $db->escape_string($player->avatar),
+			'steamavatar_medium'	=> $db->escape_string($player->avatar),
+			'steamavatar_full'		=> $db->escape_string($player->avatar),
+			'steamstatus'			=> $db->escape_string($player->personastate),
+			'steamgame'				=> $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->gameextrainfo))
+		);	
 	}
 	return $steam_update;
 }

@@ -102,6 +102,214 @@ if ($mybb->settings['mysteam_apikey'])
 }
 
 /*
+ * mysteam_check_main_cache()
+ * 
+ * Checks main mysteam cache, calls mysteam_build_main_cache() if it is older than allowed lifespan, updates cache with new info, then returns cached info.
+ * 
+ * return: (mixed) an (array) of the cached Steam user info, or (bool) false on fail.
+ */
+function mysteam_check_main_cache()
+{	
+	global $mybb, $cache;
+	
+	// Ensure the minimum cache lifespan of 1 hour.
+	if ($mybb->settings['mysteam_main_cache'] < 1)
+	{
+		$mybb->settings['mysteam_main_cache'] == 1;
+	}
+	
+	$steam = $cache->read('mysteam');
+	
+	// Convert the cache lifespan setting into seconds.
+	$cache_lifespan = 3600 * (int) $mybb->settings['mysteam_main_cache'];
+	
+	// If the cache is still current enough, or if last attempt to contact Steam failed and it hasn't been over a half-hour since then, just return the cached info.
+	if ( (TIME_NOW - (int) $steam['time'] < $cache_lifespan) || (TIME_NOW - (int) $steam['lastattempt'] < 1800) )
+	{	
+		return $steam;
+	}	
+		
+	$steam_update = mysteam_build_main_cache();
+	
+	// If response generated, update the cache.
+	if ($steam_update['users'])
+	{
+		$steam_update['version'] = $steam['version'];
+		$cache->update('mysteam', $steam_update);
+		return $steam_update;
+	}
+	// If not, cache time of last attempt to contact Steam, so it can be checked later, and return last cached info.
+	else
+	{
+		$steam['lastattempt'] = TIME_NOW;
+		$steam['version'] = $steam['version'];
+		$cache->update('mysteam', $steam);
+		return $steam;
+	}
+}
+
+/*
+ * mysteam_filter_groups()
+ * 
+ * Queries database for users with Steam IDs (filtering as needed based on settings), contacts Steam servers to obtain current user info, then caches new info.
+ * 
+ * @param - $user - (array) the user to be checked against allowed groups.
+ *
+ * return: (bool) true if user in allowed group (or limiting by group is disabled), false otherwise.
+ */
+function mysteam_filter_groups($user)
+{
+	global $mybb;
+	static $gids;
+
+	// Return true if no usergroups to filter from.
+	if (!$mybb->settings['mysteam_limitbygroup'])
+	{
+		return true;
+	}
+	
+	// Check if the user is in an authorized usergroup.
+	if (empty($gids))
+	{
+		$gids = explode(',', $mybb->settings['mysteam_limitbygroup']);
+			
+		if (is_array($gids))
+		{
+			$gids = array_map('intval', $gids);
+		}
+		else
+		{
+			$gids = (int) $mybb->settings['mysteam_limitbygroup'];
+		}
+	}
+		
+	$usergroups = explode(',', $user['additionalgroups']);
+	$usergroups[] = $user['usergroup'];
+	
+	if (!is_array($usergroups))
+	{
+		$usergroups = array($usergroups);
+	}
+	
+	if (array_intersect($usergroups, $gids))
+	{
+		return true;
+	}
+	return false;
+}
+
+/*
+ * mysteam_build_main_cache()
+ * 
+ * Queries database for users with Steam IDs (filtering as needed based on settings), contacts Steam servers to obtain current user info, then caches new info.
+ * 
+ * return: (mixed) an (array) of the Steam user info to be cached, or (bool) false on fail.
+ */
+function mysteam_build_main_cache()
+{
+	global $mybb, $db, $cache;
+	
+	// Don't update info for users who haven't visited since the cutoff time, if set.
+	if ($mybb->settings['mysteam_prune'])
+	{
+		$cutoff = TIME_NOW - (86400 * (int) $mybb->settings['mysteam_prune']);
+		$cutoff_query = 'AND lastvisit > ' . $cutoff;
+	}
+	
+	// Retrieve all members who have Steam IDs from the database.
+	$query = $db->simple_select("users", "uid, username, avatar, usergroup, additionalgroups, steamid", "steamid IS NOT NULL AND steamid<>''" . $cutoff_query, array("order_by" => 'username'));
+
+	// Check if there are usergroups to limit the results to.
+	if ($mybb->settings['mysteam_limitbygroup'])
+	{
+		// Loop through results, casting aside those not in the allowed usergroups like the dry remnant of a garden flower.
+		while ($user = $db->fetch_array($query))
+		{	
+			$is_allowed = mysteam_filter_groups($user);
+			
+			if ($is_allowed)
+			{
+				$users[] = $user;
+			}
+		}
+	}
+	else
+	{	
+		while ($user = $db->fetch_array($query))
+		{
+			$users[] = $user;
+		}
+	}
+
+	// Only run if users to display
+	if (!$users)
+	{
+		return false;
+	}
+	
+	// Generate list of URLs for contacting Steam's servers.
+	foreach ($users as $user)
+	{
+		if (!$mybb->settings['mysteam_status_enable'])
+		{
+			$data[] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
+		}
+		if ($mybb->settings['mysteam_other_enable'])
+		{
+			if ($mybb->settings['mysteam_level'])
+			{
+				$data[] = 'http://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
+			}
+			
+			if ($mybb->settings['mysteam_recently_played'])
+			{
+				$data[] = 'http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $user['steamid'];
+			}
+		}
+	}
+
+	// Fetch data from Steam's servers.
+	$responses = multiRequest($data);	
+	
+	// Check that there was a response (i.e. ensure Steam's servers aren't down).
+	if (strpos($responses[0], 'response') === FALSE)
+	{	
+		return false;
+	}
+	
+	// Cache time of cache update.
+	$steam_update['time'] = TIME_NOW;
+	
+	// Loop through results from Steam and associate them with the users from database query.
+	for ($n = 0; $n <= count($users); $n++)
+	{
+		$user = $users[$n];
+		$response = $responses[$n];
+		
+		// Occasionally Steam's servers return a response with no values. If so, don't update info for the current user.
+		if (strpos($response, 'personastate') === FALSE)
+		{
+			continue;
+		}
+
+		// Decode response (returned in JSON), then create array of important fields.
+		$decoded = json_decode($response);
+
+		$steam_update['users'][$user['uid']] = array (
+			'steamlevel'			=> $db->escape_string($decoded->response->steamlevel)
+			'steamname'				=> htmlspecialchars_uni($decoded->response->players[0]->personaname)),
+			'steamurl'				=> $db->escape_string($decoded->response->players[0]->profileurl),
+			'steamavatar'			=> $db->escape_string($decoded->response->players[0]->avatar),
+			'steamavatar_medium'	=> $db->escape_string($decoded->response->players[0]->avatarmedium),
+			'steamavatar_full'		=> $db->escape_string($decoded->response->players[0]->avatarfull),
+			'steamstatus'			=> $db->escape_string($decoded->response->players[0]->personastate),
+			'steamgame'				=> htmlspecialchars_uni($decoded->response->players[0]->gameextrainfo))
+		);
+	}
+	return $steam_update;
+}
+
+/*
  * mysteam_postbit()
  * 
  * Calls mysteam_check_cache(), then uses cache output to generate array of Steam info for every user on current show thread page.
