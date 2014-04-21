@@ -17,6 +17,7 @@ $l['mysteam_profile_editor'] = "Profile Editor";
 $l['mysteam_asb_success'] = "Advanced Sidebox detected. The ASB module was successfully integrated.";
 $l['mysteam_apikey_needed'] = "No Steam Web API Key has been provided. Please go to Settings and enter an API key.";
 $l['mysteam_steamids_needed'] = "No users currently have Steam IDs associated. Please encourage your users to use the new User CP form for integration, or you can use the Moderator CP to do it on their behalf.";
+$l['mysteam_asb_upgrade'] = "Your Advanced Sidebox installation does not meet the minimum requirements. Please upgrade to Advanced Sidebox v2.1 or later.";
  
 // Title and description for the ASB module
 $l['asb_mysteam_title'] = "Steam Status";
