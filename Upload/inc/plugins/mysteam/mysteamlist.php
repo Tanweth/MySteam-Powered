@@ -5,7 +5,6 @@
  *
  * ADVANCED SIDEBOX MODULE
  * Uses the Steam Web API to generate a sidebox with a list of forum users (with associated Steam IDs) who are currently on Steam and their status.
- * Requires Advanced Sidebox 2.0.5 or later.
  */
 
 // Include a check for Advanced Sidebox
@@ -61,7 +60,8 @@ function asb_mysteamlist_info()
 		'title' => $lang->asb_mysteam_title,
 		'description' => $lang->asb_mysteam_desc,
 		'wrap_content'	=> true,
-		'version' => '1.0.1',
+		'version' => '1.2.2',
+		'compatibility' => '2.1',
 		'xmlhttp' => true,
 		'settings' =>	array
 		(
@@ -221,13 +221,13 @@ function asb_mysteamlist_build_list($settings, $width)
 	}
 	
 	// If set to display multiple columns, reduce each status entry's width accordingly.
-	if ((int) $settings['asb_steam_list_cols']['value'] < 2)
+	if ((int) $settings['asb_steam_list_cols'] < 2)
 	{
 		$entry_width = $width - 5;
 	}
 	else
 	{
-		$col_number = (int) $settings['asb_steam_list_cols']['value'];
+		$col_number = (int) $settings['asb_steam_list_cols'];
 		$entry_width = ($width - (5 + (5 * $col_number))) / $col_number;
 	}
 	
@@ -331,11 +331,11 @@ function asb_mysteamlist_build_list($settings, $width)
 		}
 
 		// Don't generate entries for users in excess of the maximum number setting.
-		if ($settings['asb_steam_list_number']['value'])
+		if ($settings['asb_steam_list_number'])
 		{
 			$n++;
 			
-			if ($n > (int) $settings['asb_steam_list_number']['value'])
+			if ($n > (int) $settings['asb_steam_list_number'])
 			{
 				break;
 			}
