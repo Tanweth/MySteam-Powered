@@ -65,13 +65,13 @@ function mysteam_info()
 
 	return array(
 		'name'			=> $lang->mysteam_title,
-		'description'		=> $mysteam_desc,
+		'description'	=> $mysteam_desc,
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
-		'authorsite'		=> 'http://kerfufflealliance.com',
-		'version'		=> '1.2.1',
+		'authorsite'	=> 'http://kerfufflealliance.com',
+		'version'		=> '1.2.2',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
-		'compatibility' 	=> '16*'
+		'compatibility' => '16*'
 	);
 }
 
@@ -465,6 +465,11 @@ function mysteam_upgrade()
 		$query = $db->simple_select("themestylesheets", "sid", "tid='1' AND cachefile='mysteam.css'");
 		$sid = (int) $db->fetch_field($query, 'sid');
 		$db->update_query('themestylesheets', $stylesheet_array, "sid='".$sid."'");
+	}
+	
+	if (file_exists(MYBB_ROOT.'inc/plugins/asb.php') && version_compare($version['cache'], '1.2.2', '<'))
+	{
+		@copy(MYBB_ROOT.'inc/plugins/mysteam/mysteamlist.php', MYBB_ROOT.'inc/plugins/asb/modules/mysteamlist.php');
 	}
 	
 	return $version;
