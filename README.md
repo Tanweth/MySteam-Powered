@@ -9,7 +9,7 @@ All commits to the testing branch have undergone basic testing and should be ful
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 2.0
+* Version: 1.2.2
 * Compatibility: MyBB 1.6.x (last tested on 1.6.12)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
@@ -42,7 +42,7 @@ Owners of gaming-related forums take heed! Here be a plugin for the MyBB forum s
 
 * Simply upload the files to your forum's directory, then go to your Admin CP > Configuration > Plugins. Find "MySteam Powered" on the list, and click "Install & Activate." Warnings about current plugin issues that need addressing will be displayed on this page.
 
-* To use with Advanced Sidebox (ASB), you MUST have ASB v2.0.5 or later. If ASB is installed, the ASB module will be automatically installed into your ASB directory when you install the plugin. 
+* To use with Advanced Sidebox (ASB), you MUST have ASB v2.1 or later. If ASB is installed, the ASB module will be automatically installed into your ASB directory when you install the plugin. 
 
 ## How to Upgrade
 
@@ -81,6 +81,9 @@ If you notice a bug, you should report it in the Issues sections of the GitHub p
 You can also ask for support (bug-related or not) in the release thread: http://community.mybb.com/thread-151564.html
 
 ## Changelog
+
+* 1.2.2
+	* Added compatibility with ASB v2.1 on the ASB module. If you don't use the ASB module, there is no need to upgrade.
 
 * 1.2.1
 	* Reintroduced filtering of special characters from Steam usernames and game names, since some characters were preventing the cache from being generated. The filtering is more relaxed than in v1.1 (i.e. it will allow more special characters).
