@@ -58,7 +58,6 @@ function mysteam_info()
 		}
 		// Check if the current ASB version is the minimum required.
 		$asb = $cache->read('asb');
-		
 		if (file_exists(MYBB_ROOT.'inc/plugins/asb.php') && version_compare($asb['version'], '2.1', '<'))
 		{
 			$mysteam_desc .= '<li><img src="' .$mybb->settings['bburl']. '/images/error.gif"> ' .$lang->mysteam_asb_upgrade. '</li>';
