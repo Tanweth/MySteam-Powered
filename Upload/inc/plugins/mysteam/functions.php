@@ -201,11 +201,11 @@ function mysteam_build_cache()
 	{			
 		$steam_update['users'][$users_sorted[$player->steamid]['uid']] = array (
 			'username'	=> $users_sorted[$player->steamid]['username'],
-			'steamname'	=> $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->personaname)),
+			'steamname'	=> preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->personaname),
 			'steamurl'	=> $db->escape_string($player->profileurl),
 			'steamavatar'	=> $db->escape_string($player->avatar),
 			'steamstatus'	=> $db->escape_string($player->personastate),
-			'steamgame'	=> $db->escape_string(preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->gameextrainfo))
+			'steamgame'	=> preg_replace("/[^a-zA-Z 0-9-,!@#$%^*()=+&_{};:'<>?]+/", "", $player->gameextrainfo)
 		);	
 	}
 	return $steam_update;
