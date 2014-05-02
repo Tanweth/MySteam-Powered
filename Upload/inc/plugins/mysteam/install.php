@@ -472,6 +472,7 @@ function mysteam_upgrade()
 		$db->update_query('themestylesheets', $stylesheet_array, "sid='".$sid."'");
 	}
 	
+	// If ASB is installed and the current version is earlier than 1.2.2, update the ASB module for ASB v2.1 compatibility.
 	if (file_exists(MYBB_ROOT.'inc/plugins/asb.php') && version_compare($version['cache'], '1.2.2', '<'))
 	{
 		@copy(MYBB_ROOT.'inc/plugins/mysteam/mysteamlist.php', MYBB_ROOT.'inc/plugins/asb/modules/mysteamlist.php');
