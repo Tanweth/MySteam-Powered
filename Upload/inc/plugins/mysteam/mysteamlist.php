@@ -59,6 +59,9 @@ function asb_mysteamlist_info()
 	(
 		'title' => $lang->asb_mysteam_title,
 		'description' => $lang->asb_mysteam_desc,
+		'author' => 'Tanweth',
+		'module_site' => 'https://github.com/Tanweth/MySteam-Powered',
+		'author_site' => 'http://kerfufflealliance.com',
 		'wrap_content'	=> true,
 		'version' => '1.2.2',
 		'compatibility' => '2.1',
