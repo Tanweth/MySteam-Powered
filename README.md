@@ -79,7 +79,8 @@ You can also ask for support (bug-related or not) in the release thread: http://
 ## Changelog
 
 * 1.2.2
-	* Added compatibility with ASB v2.1 on the ASB module. If you don't use the ASB module, there is no need to upgrade.
+	* Added compatibility with ASB v2.1 on the ASB module.
+	* Fixed display of backward slashes in names whenever an apostrophe appeared.
 
 * 1.2.1
 	* Reintroduced filtering of special characters from Steam usernames and game names, since some characters were preventing the cache from being generated. The filtering is more relaxed than in v1.1 (i.e. it will allow more special characters).
