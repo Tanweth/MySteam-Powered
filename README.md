@@ -38,6 +38,8 @@ Owners of gaming-related forums take heed! Here be a plugin for the MyBB forum s
 
 * Simply upload the files to your forum's directory, then go to your Admin CP > Configuration > Plugins. Find "MySteam Powered" on the list, and click "Install & Activate." Warnings about current plugin issues that need addressing will be displayed on this page.
 
+* The cURL module for PHP 5 must be installed on your web server for this plugin to work. Most webhosts install it by default, but if you have any issues with integrating Steam or seeing the status list, cURL may not be installed.
+
 * To use with Advanced Sidebox (ASB), you MUST have ASB v2.1 or later. If ASB is installed, the ASB module will be automatically installed into your ASB directory when you install the plugin. 
 
 ## How to Upgrade
@@ -54,7 +56,7 @@ If you are upgrading to v1.1 and you have made any edits to the CSS file (mystea
 
 * Built-In Status List: The plugin's built-in status list is disabled automatically if Advanced Sidebox is detected. However, both the built-in status list and the ASB module can be used together (even on the same pages) if you'd prefer to combine them. You can enable it in Settings.
 
-* Built-In Status List vs. Advanced Sidebox Module: The built-in status list is automatically set to appear at the top of your Index and Portal pages (it can be moved, see below under Customization). It can only appear on those pages. The ASB module can be set to appear on any (or every) page, and can be set to automatically refresh without needing a page reload.
+* Built-In Status List vs. Advanced Sidebox Module: The built-in status list is automatically set to appear at the top of your Index and Portal pages (it can be moved, see below under Customization). The ASB module can be more easily set to appear on other pages, and can be set to automatically refresh without needing a page reload.
 
 ## Customization
 
@@ -65,8 +67,6 @@ If you are upgrading to v1.1 and you have made any edits to the CSS file (mystea
 * You can modify the CSS used by MySteam Powered from the normal stylesheets list under each theme. The file is named mysteam.css.
 
 ## Known Issues
-
-* The code for handling when the Steam network is down is largely theoretical. Steam's network is rarely down, and if it is down it is rarely down for very long, so I haven't been able to test it in a "live" downtime scenario. It should work, but it could go a bit wild. :P
 
 * A user is not shown as in-game if he is currently playing a non-Steam game. This is due to how the Steam Web API works, and unfortunately there is no fix unless Valve decides to return this feature (in 2013 the API used to recognize non-Steam games).
 
