@@ -5,8 +5,8 @@ MySteam Powered
   <img title="MySteam Powered" alt="MySteam Powered" src="http://kerfufflealliance.com/pictures/mysteam/logo_mysteam.jpg" />
 </p>
 
-* Version: 1.2.2
-* Compatibility: MyBB 1.6.x (last tested on 1.6.12)
+* Version: 1.3
+* Compatibility: MyBB 1.8.x (last tested on 1.8.3)
 * Author: Tanweth
 * GitHub: https://github.com/Tanweth/MySteam-Powered
 * Release thread: http://community.mybb.com/thread-151564.html
@@ -77,7 +77,10 @@ If you notice a bug, you should report it in the Issues sections of the GitHub p
 You can also ask for support (bug-related or not) in the release thread: http://community.mybb.com/thread-151564.html
 
 ## Changelog
-
+* 1.3
+	* Now compatible with MyBB 1.8.x!
+	* Introduced new system of connecting Steam accounts - now we use Open ID, so user has to login.
+	* Added Polish language pack.
 * 1.2.2
 	* Added compatibility with ASB v2.1 on the ASB module.
 	* Fixed display of backward slashes in names whenever an apostrophe appeared.
@@ -116,6 +119,7 @@ You can also ask for support (bug-related or not) in the release thread: http://
 * 1.0 - Initial release.
 
 ## Special Thanks
+* Tanweth - for creating this plugin.
 
 * Wildcard - for making Advanced Sidebox (an awesome plugin), and for routinely assisting me with issues.
 
@@ -124,3 +128,8 @@ You can also ask for support (bug-related or not) in the release thread: http://
 * Kiibakun - for being a very helpful tester and writing the Spanish language pack.
 
 * michaelkr1 - for being a very helpful tester and making multiple helpful feature suggestions.
+
+* Creators of [LightOpenID](https://gitorious.org/lightopenid) - for making this amazing class.
+
+* SmItH197 - for making [SteamAuthentication](https://github.com/SmItH197/SteamAuthentication), which was my inspiration and source of knowledge. 
+

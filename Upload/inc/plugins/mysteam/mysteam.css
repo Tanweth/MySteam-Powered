@@ -128,3 +128,11 @@
 .mysteam_usercp_nav {
 	background: url(../../../images/mysteam/steam_icon.png) no-repeat left center;
 }
+.mysteam_login_button {
+width: 118px; 
+height: 51px; 
+border: none; 
+background: url('http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_border.png') no-repeat;
+outline: none;
+cursor: pointer;
+}

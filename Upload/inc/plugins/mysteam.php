@@ -342,6 +342,16 @@ function mysteam_usercp()
 	{
 		global $db, $theme, $templates, $headerinclude, $header, $footer, $plugins, $usercpnav, $steamform;
 		
+		// Require LightOpenID class and create an object.
+		require "mysteam/openid.php";
+		$openid = new LightOpenID($mybb->settings['bburl']);
+		
+		$openid->returnUrl = $mybb->settings['bburl'].'/usercp.php?action=steamid';
+		
+		$openid->identity = 'http://steamcommunity.com/openid';
+		
+		$openid_authurl = $openid->authUrl();
+		
 		// Make sure user is in an allowed usergroup if set.
 		$is_allowed = mysteam_filter_groups($mybb->user);
 				
@@ -353,143 +363,92 @@ function mysteam_usercp()
 		add_breadcrumb($lang->nav_usercp, 'usercp.php');
 		add_breadcrumb($lang->mysteam_integration, 'usercp.php?action=steamid');
 
-		$submit_display = 'display: none;';
+		$submit_display = '';
 		
-		if (!$mybb->user['steamid'])
+		if ($mybb->user['steamid'])
+		{
+			$connect_display = 'display: none;';
+		}
+		else
 		{
 			$decouple_display = 'display: none;';
 		}
-		
-		// Process the form submission if something has been submitted.
-		if ($mybb->input['uid'])
-		{
-			$submit_display = '';
-			$uid = $db->escape_string($mybb->input['uid']);
+			// Use current user uid . . .
+			$uid = $mybb->user['uid'];
 			
-			// If user has attempted to submit a Steam profile . . .
-			if ($mybb->input['submit'])
-			{	
-				// If user directly entered a Steam ID . . .
-				if (is_numeric($mybb->input['steamprofile']) && (strlen($mybb->input['steamprofile']) === 17))
-				{
-					$steamid = $db->escape_string($mybb->input['steamprofile']);
-					
-					// Ensure the Steam ID is valid.
-					$data = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $steamid;
-					$response = multiRequest($data);
-					
-					if (!strpos($response[0], 'steamid'))
-					{
-						unset($steamid);
-					}
-					else
-					{
-						$decoded = json_decode($response[0]);
-						$steamname = $decoded->response->players[0]->personaname;
-					}
-				}
-				// If user directly entered a vanity URL name . . .
-				elseif (!strpos($mybb->input['steamprofile'], '/'))
-				{
-					$vanity_url = $db->escape_string($mybb->input['steamprofile']);
-				
-					$data = 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' .$mybb->settings['mysteam_apikey']. '&vanityurl=' . $vanity_url;
-					$response = multiRequest($data);
-					$decoded = json_decode($response[0]);
-					
-					if ($decoded->response->success == 1)
-					{
-						$steamid = $db->escape_string($decoded->response->steamid);
-					}
-				}
-				// If user entered a non-vanity profile URL . . .
-				elseif (strpos($mybb->input['steamprofile'], '/profiles/'))
-				{	
-					$trimmed_url = rtrim($mybb->input['steamprofile'], '/');
-					$parsed_url = explode('/', $trimmed_url);
-					$steamid = end($parsed_url);
-					
-					$data = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .$mybb->settings['mysteam_apikey']. '&steamids=' . $steamid;
-					$response = multiRequest($data);
-					
-					if (!strpos($response[0], 'steamid'))
-					{
-						unset($steamid);
-					}
-					else
-					{
-						$decoded = json_decode($response[0]);
-						$steamname = $decoded->response->players[0]->personaname;
-					}
-				}
-				// If user entered a vanity profile URL . . .
-				elseif (strpos($mybb->input['steamprofile'], '/id/'))
-				{		
-					$trimmed_url = rtrim($mybb->input['steamprofile'], '/');
-					$parsed_url = explode('/', $trimmed_url);
-					$vanity_url = end($parsed_url);
-					
-					$data = 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' .$mybb->settings['mysteam_apikey']. '&vanityurl=' . $vanity_url;
-					$response = multiRequest($data);
-					$decoded = json_decode($response[0]);
-					
-					if ($decoded->response->success == 1)
-					{
-						$steamid = $db->escape_string($decoded->response->steamid);
-					}
-				}
-				
-				// If we have a valid Steam ID . . .
-				if ($steamid)
-				{
-					$query = $db->simple_select("users", "username", "steamid='".$steamid."'");
-					$username_same = $db->fetch_field($query, 'username');
-					
-					// Don't run if Steam ID matches another user's current ID, and display error.
-					if ($db->num_rows($query))
-					{
-						$submit_message = '
-							<p><em>' .$lang->please_correct_errors. '</em></p>
-							<p>' .$lang->mysteam_submit_same. $username_same. '</p>';
-					}
-					// Otherwise, write to the database and display success!
-					else
-					{
-						$db->update_query("users", array('steamid' => $steamid), "uid='".$uid."'");
-						
-						if ($vanity_url)
-						{
-							$success_third_line = '<br />
-							<strong>' .$lang->mysteam_vanityurl. '</strong>' .$vanity_url. '</p>';
-						}
-						else
-						{
-							$success_third_line = '<br />
-							<strong>' .$lang->mysteam_name. '</strong>' .$steamname. '</p>';
-						}
-						
-						$submit_message = 
-							'<p><strong>' .$lang->mysteam_submit_success. '</strong></p>
-							<p><strong>' .$lang->mysteam_steamid. '</strong>' .$steamid.
-							$success_third_line;
-					}
-				}
-				// If we don't have a valid Steam ID, display an error.
-				else
-				{
-					$submit_message = 
-						'<p><em>' .$lang->please_correct_errors. '</em></p>
-						<p>' .$lang->mysteam_submit_invalid. '</p>';
-				}
-			}
 			// If user has requested to decouple . . .
-			elseif ($mybb->input['decouple'])
+			if ($mybb->input['decouple'])
 			{
 				$db->update_query("users", array('steamid' => ''), "uid='".$uid."'");
 				$submit_message = $lang->mysteam_decouple_success;
 			}
-		}
-		
+			
+			elseif ($openid->mode)
+			{
+				// If user canceled login . . .
+				if ($openid->mode == 'cancel')
+				{
+					$submit_message = $lang->mysteam_canceled_login;		
+				}
+				// In other case . . .
+				else
+				{
+					// Validate Open ID . . .
+					if ($openid->validate()) 
+					{ 
+						$id = $openid->identity;
+						$ptn = "/^http:\/\/steamcommunity\.com\/openid\/id\/(7[0-9]{15,25}+)$/";
+						preg_match($ptn, $id, $matches);
+					  
+						$_SESSION['steamid'] = $matches[1]; 
+						$steamid = $db->escape_string($_SESSION['steamid']);
+						// Check for other users having the same Steam ID . . .
+						$query = $db->simple_select("users", "username", "steamid='".$steamid."'");
+						$username_same = $db->fetch_field($query, 'username');
+						
+						// Don't run if Steam ID matches another user's current ID, and display error.
+						if ($db->num_rows($query))
+						{
+							$submit_message = '
+								<p><em>' .$lang->please_correct_errors. '</em></p>
+								<p>' .$lang->mysteam_submit_same. $username_same. '</p>';
+						}
+						// Otherwise, write to the database and display success!
+						else
+						{
+							$db->update_query("users", array('steamid' => $steamid), "uid='".$uid."'");
+							
+							// Unset SESSION's Steam ID . . .
+							unset($_SESSION['steamid']);
+							$submit_message = 
+								'<p><strong>' .$lang->mysteam_submit_success. '</strong></p>
+								<p><strong>' .$lang->mysteam_steamid. '</strong>' .$steamid.
+								$success_third_line;
+						}
+					}
+						
+					// If validation went wrong.
+					else
+					{
+						$submit_message = 
+							'<p><em>' .$lang->please_correct_errors. '</em></p>
+							<p>' .$lang->mysteam_login_error. '</p>';
+					}
+				}
+			
+			}
+			
+			// If user has clicked on the login button . . .
+			elseif (isset($mybb->input['login']))
+			{	
+				header('Location: ' . $openid->authUrl());
+			}
+			// Nothing to do, hide infobox.
+			else
+			{
+			$submit_display = 'display: none;';
+			}
+
 		eval("\$steamform = \"".$templates->get("mysteam_usercp")."\";");
 		output_page($steamform);
 	}
