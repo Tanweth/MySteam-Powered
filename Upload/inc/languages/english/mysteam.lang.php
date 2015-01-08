@@ -105,10 +105,11 @@ $l['mysteam_search'] = "Steam profile search using forum username";
 $l['mysteam_search_manual'] = "Manual search";
 $l['mysteam_decouple'] = "Decouple Steam";
 $l['mysteam_decouple_body'] = "Decouple Steam:";
+$l['mysteam_powered_by'] = "Powered by";
 
 // Steam ID form (User CP)
 $l['mysteam_usercp_intro'] = "This forum includes the ability to display your current Steam status (whether online/offline, and if you're in a game), and display a Steam contact field for you on your profile.";
-$l['mysteam_usercp_instruct'] = "To activate this feature, enter the URL to your Steam profile, the name on your Steam vanity URL if set (steamcommunity.com/id/[name]), or your 64-bit Steam ID in the box below, then submit. You can use the links below to search for your Steam profile.";
+$l['mysteam_usercp_instruct'] = "To activate this feature, click on the green button below. You will be redirected to official Steam page where you can login with your Steam account credentials.";
 $l['mysteam_usercp_note'] = "NB: For your status to be displayed, your Steam profile must NOT be set to private!";
 $l['mysteam_usercp_decouple'] = "If you wish to decouple your Steam ID from your MyBB account, hit the appropriate button below.";
 
@@ -122,12 +123,14 @@ $l['mysteam_modcp_decouple'] = "If you wish to decouple the Steam ID from this u
 // Steam ID form (submit)
 $l['mysteam_submit_invalid'] = "The URL or ID you entered did not return a valid response. It may be incorrect, or Steam Community may currently be unavailable.";
 $l['mysteam_submit_same'] = "The Steam ID associated with the profile URL you entered is identical to the Steam ID currently associated with the following user: ";
+$l['mysteam_login_error'] = "Something went wrong (probably you've tried to refresh the page).";
 $l['mysteam_steamid'] = "Steam ID: ";
 $l['mysteam_vanityurl'] = "Vanity URL Name: ";
 
 // Steam ID form (User CP submit)
 $l['mysteam_submit_success'] = "Success! Your Steam ID has been integrated. The following information is associated with the profile you submitted:";
 $l['mysteam_decouple_success'] = "Your Steam ID has successfully been decoupled from your account.";
+$l['mysteam_canceled_login'] = "You have canceled the login page. Your accounts have not been integrated.";
 
 // Steam ID form (Mod CP submit)
 $l['mysteam_submit_success_modcp'] = "Success! The user's Steam ID has been integrated. The following information is associated with the profile you submitted:";

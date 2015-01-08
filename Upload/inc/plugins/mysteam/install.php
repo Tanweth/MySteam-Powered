@@ -75,9 +75,9 @@ function mysteam_info()
 		'website'		=> 'http://github.com/Tanweth/MySteam-Powered',
 		'author'		=> 'Tanweth',
 		'authorsite'	=> 'http://kerfufflealliance.com',
-		'version'		=> '1.2.2',
+		'version'		=> '1.3',
 		'guid' 			=> 'c6c646c000efdee91b3f6de2fd7dd59a',
-		'compatibility' => '16*'
+		'compatibility' => '18*'
 	);
 }
 
@@ -111,7 +111,7 @@ function mysteam_info()
 
 	// Add non-Advanced Sidebox status list settings group, then settings.
 	$group = array(
-		'gid'			=> 'NULL',
+		'gid'			=> 0,
 		'title'			=> $lang->mysteam_list_group_title,
 		'name'			=> 'mysteam_list_group',
 		'description'	=> $lang->mysteam_list_group_desc,
@@ -123,7 +123,7 @@ function mysteam_info()
 	$group_gid = (int) $gid;	
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_index',
 		'title'			=> $lang->mysteam_index_title,
 		'description'	=> $lang->mysteam_index_desc,
@@ -135,7 +135,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_portal',
 		'title'			=> $lang->mysteam_portal_title,
 		'description'	=> $lang->mysteam_portal_desc,
@@ -147,7 +147,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_list_width',
 		'title'			=> $lang->mysteam_list_width_title,
 		'description'	=> $lang->mysteam_list_width_desc,
@@ -159,7 +159,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_list_number',
 		'title'			=> $lang->mysteam_list_number_title,
 		'description'	=> $lang->mysteam_list_number_desc,
@@ -182,7 +182,7 @@ function mysteam_info()
 	
 	// Add main settings group, then settings.
 	$group = array(
-		'gid'			=> 'NULL',
+		'gid'			=> 0,
 		'title'			=> $lang->mysteam_title,
 		'name'			=> 'mysteam_main_group',
 		'description'	=> $lang->mysteam_main_group_desc,
@@ -194,7 +194,7 @@ function mysteam_info()
 	$group_gid = (int) $gid;
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_list_enable',
 		'title'			=> $lang->mysteam_list_enable_title,
 		'description'	=> $mysteam_list_enable_desc,
@@ -206,7 +206,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_apikey',
 		'title'			=> $lang->mysteam_apikey_title,
 		'description'	=> $lang->mysteam_apikey_desc,
@@ -218,7 +218,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_limitbygroup',
 		'title'			=> $lang->mysteam_limitbygroup_title,
 		'description'	=> $lang->mysteam_limitbygroup_desc,
@@ -230,7 +230,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_cache',
 		'title'			=> $lang->mysteam_cache_title,
 		'description'	=> $lang->mysteam_cache_desc,
@@ -242,7 +242,7 @@ function mysteam_info()
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_displayname',
 		'title'			=> $lang->mysteam_displayname_title,
 		'description'	=> $lang->mysteam_displayname_desc,
@@ -257,7 +257,7 @@ both='.$lang->mysteam_displayname_both,
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_profile',
 		'title'			=> $lang->mysteam_profile_title,
 		'description'	=> $lang->mysteam_profile_desc,
@@ -269,7 +269,7 @@ both='.$lang->mysteam_displayname_both,
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_postbit',
 		'title'			=> $lang->mysteam_postbit_title,
 		'description'	=> $lang->mysteam_postbit_desc,
@@ -284,7 +284,7 @@ no='.$lang->mysteam_postbit_no,
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_hover',
 		'title'			=> $lang->mysteam_hover_title,
 		'description'	=> $lang->mysteam_hover_desc,
@@ -296,7 +296,7 @@ no='.$lang->mysteam_postbit_no,
 	$db->insert_query('settings', $setting);
 	
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_prune',
 		'title'			=> $lang->mysteam_prune_title,
 		'description'	=> $lang->mysteam_prune_desc,
@@ -308,7 +308,7 @@ no='.$lang->mysteam_postbit_no,
 	$db->insert_query('settings', $setting);
 
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_usercp',
 		'title'			=> $lang->mysteam_usercp_title,
 		'description'	=> $lang->mysteam_usercp_desc,
@@ -320,7 +320,7 @@ no='.$lang->mysteam_postbit_no,
 	$db->insert_query('settings', $setting);
 
 	$setting = array(
-		'sid'			=> 'NULL',
+		'sid'			=> 0,
 		'name'			=> 'mysteam_modcp',
 		'title'			=> $lang->mysteam_modcp_title,
 		'description'	=> $lang->mysteam_modcp_desc,
@@ -346,12 +346,13 @@ no='.$lang->mysteam_postbit_no,
 	$stylesheet = @file_get_contents(MYBB_ROOT.'inc/plugins/mysteam/mysteam.css');
 	
 	$stylesheet_array = array(
-		'sid'			=> NULL,
+		'sid'			=> 0,
 		'name'			=> 'mysteam.css',
 		'tid'			=> '1',
 		'stylesheet'	=> $db->escape_string($stylesheet),
 		'cachefile'		=> 'mysteam.css',
-		'lastmodified'	=> TIME_NOW
+		'lastmodified'	=> TIME_NOW,
+		'attachedto' => ''
 	);
 	$db->insert_query('themestylesheets', $stylesheet_array);
 	cache_stylesheet(1, 'mysteam.css', $stylesheet);
@@ -446,7 +447,7 @@ function mysteam_upgrade()
 		$gid = $db->fetch_field($query, 'gid');
 		
 		$setting = array(
-			'sid'			=> 'NULL',
+			'sid'			=> 0,
 			'name'			=> 'mysteam_hover',
 			'title'			=> $lang->mysteam_hover_title,
 			'description'	=> $lang->mysteam_hover_desc,
@@ -634,6 +635,7 @@ function mysteam_activate()
 <head>
 	<title>{$mybb->settings[\'bbname\']} - {$lang->mysteam_integration}</title>
 	{$headerinclude}
+	<link rel="stylesheet" type="text/css" href="{$mybb->settings[\'bburl\']}/inc/plugins/mysteam/mysteam.css">
 </head>
 <body>
 {$header}
@@ -656,22 +658,21 @@ function mysteam_activate()
 							</div>
 							<p>{$lang->mysteam_usercp_intro}</p>
 							<p>{$lang->mysteam_usercp_instruct}</p>
-							<p><a href="http://steamcommunity.com/actions/Search?K={$mybb->user[\'username\']}">{$lang->mysteam_search}</a> | <a href="http://steamcommunity.com/actions/Search">{$lang->mysteam_search_manual}</a></p>
 							<p>{$lang->mysteam_usercp_note}</p>
-							{$lang->mysteam_url} <input type="text" name="steamprofile" class="textbox">
 							<input type="hidden" name="uid" value="{$mybb->user[\'uid\']}">
 							<input type="hidden" name="steamid" value="{$mybb->user[\'steamid\']}">
 							<input type="hidden" name="action" value="steamid">
 							<p><strong>{$lang->mysteam_current}</strong> {$mybb->user[\'steamid\']}</p>
 							<p style="{$decouple_display}"><strong>{$lang->mysteam_decouple_body}</strong>  {$lang->mysteam_usercp_decouple}</p>
+							<div align="center">
+								<span style="{$connect_display}"><input type="submit" class="mysteam_login_button" name="login" value=""/></input></span>
+								<span style="{$decouple_display}"><input type="submit" class="button" name="decouple" value="{$lang->mysteam_decouple}" /></span>
+							</div>
+							<p><i>{$lang->mysteam_powered_by} <a href="http://steampowered.com/" title="Sklep Steam"><strong>Steam</strong></a></i></p>
 						</td>
 					</tr>
 				</table>
 				<br />
-				<div align="center">
-					<input type="submit" class="button" name="submit" value="{$lang->mysteam_integrate}" /> 
-					<span style="{$decouple_display}"><input type="submit" class="button" name="decouple" value="{$lang->mysteam_decouple}" /></span>
-				</div>
 			</td>
 		</tr>
 	</table>
