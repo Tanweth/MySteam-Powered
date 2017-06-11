@@ -70,7 +70,7 @@ function asb_mysteamlist_info()
 		(
 			'settings_where' => array
 			(
-				'sid' => 'NULL',
+				'sid' => NULL,
 				'name' => 'settings_where',
 				'title' => $lang->mysteam_settings_where_title,
 				'description' => $mysteam_settings_where_desc,
@@ -79,7 +79,7 @@ function asb_mysteamlist_info()
 			),
 			'asb_steam_list_cols' => array
 			(
-				'sid' => 'NULL',
+				'sid' => NULL,
 				'name' => 'asb_steam_list_cols',
 				'title' => $lang->mysteam_list_cols_title,
 				'description' => $lang->mysteam_list_cols_desc,
@@ -88,7 +88,7 @@ function asb_mysteamlist_info()
 			),
 			'asb_steam_list_number' => array
 			(
-				'sid' => 'NULL',
+				'sid' => NULL,
 				'name' => 'asb_steam_list_number',
 				'title' => $lang->mysteam_list_number_title,
 				'description' => $lang->mysteam_list_number_desc,
@@ -97,7 +97,7 @@ function asb_mysteamlist_info()
 			),
 			'xmlhttp_on' => array
 			(
-				'sid' => 'NULL',
+				'sid' => NULL,
 				'name' => 'xmlhttp_on',
 				'title' => $lang->asb_xmlhttp_on_title,
 				'description' => $lang->asb_xmlhttp_on_description,
